@@ -55,15 +55,18 @@
       "react/prop-types": "off",
       "react/display-name": "off",
       "@typescript-eslint/explicit-function-return-type": "off",
-      "prettier": {
-        "endOfLine": "auto",
-        "semi": true,
-        "singleQuote": true,
-        "tabWidth": 2,
-        "trailingComma": "es5",
-        "printWidth": 100,
-        "arrowParens": "always"
-      },
+      "prettier/prettier": [
+        "error",
+        {
+          "endOfLine": "auto",
+          "semi": true,
+          "singleQuote": true,
+          "tabWidth": 2,
+          "trailingComma": "es5",
+          "printWidth": 100,
+          "arrowParens": "always"
+        }
+      ],
       "@typescript-eslint/interface-name-prefix": "off",
       "@typescript-eslint/ban-ts-ignore": "off",
       "@typescript-eslint/explicit-module-boundary-types": "off",
@@ -99,10 +102,11 @@
     ]
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.16.0",
-    "@typescript-eslint/parser": "^5.16.0",
-    "eslint-config-prettier": "^8.5.0",
+    "@typescript-eslint/eslint-plugin": "^5.7.0",
+    "@typescript-eslint/parser": "^5.7.0",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "husky": "^7.0.4"
+    "husky": "^7.0.4",
+    "prettier": "^2.5.1"
   }
 }
