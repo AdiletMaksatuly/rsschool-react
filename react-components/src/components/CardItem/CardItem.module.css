@@ -1,0 +1,11 @@
+.card {
+  word-break: break-word;
+}
+
+.card__img {
+  max-width: 100%;
+  height: auto;
+}
+
+.card__title {
+}
