@@ -1,5 +1,6 @@
 import React from 'react';
 import CardList from '../components/CardList';
+import SearchBar from '../components/SearchBar';
 import illmaticCover from '../assets/img/illmatic.jpeg';
 import mmfoodCover from '../assets/img/mmfood.jpeg';
 import gkmcCover from '../assets/img/kendrick.jpeg';
@@ -9,12 +10,16 @@ import eminemshowCover from '../assets/img/eminemshow.jpeg';
 import donutsCover from '../assets/img/donuts.jpeg';
 import tletCover from '../assets/img/the-low-end-theory.jpeg';
 import liquidswordsCover from '../assets/img/liquid-swords.jpeg';
+import { ICard } from '../types/types';
 
-class Home extends React.Component {
-  constructor(props) {
-    super(props);
+type HomeState = {
+  cards: ICard[];
+  searchQuery: string;
+};
 
-    this.cards = [
+class Home extends React.Component<unknown, HomeState> {
+  state: HomeState = {
+    cards: [
       {
         id: 1,
         title: 'Illmatic',
@@ -78,7 +83,12 @@ class Home extends React.Component {
         body: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aut non ullam illo nisi molestiae, incidunt dolore dolorum? Quis, tempora debitis!',
         img: kssCover,
       },
-    ];
+    ],
+    searchQuery: '',
+  };
+
+  constructor(props: unknown) {
+    super(props);
   }
 
   render() {
@@ -86,7 +96,8 @@ class Home extends React.Component {
       <main className="page">
         <div className="page__content container">
           <h1>Home page</h1>
-          <CardList cards={this.cards} />
+          <SearchBar onChange={(value) => this.setState({ searchQuery: value })} />
+          <CardList cards={this.state.cards} />
         </div>
       </main>
     );

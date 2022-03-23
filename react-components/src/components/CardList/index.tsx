@@ -13,7 +13,6 @@ class CardList extends React.Component<CardListProps> {
   }
 
   render() {
-    console.log(classes);
     return (
       <ul className={classes['card-list']}>
         {this.props.cards.map((card) => (
