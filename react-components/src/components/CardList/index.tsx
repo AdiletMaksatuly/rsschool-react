@@ -14,7 +14,7 @@ class CardList extends React.Component<CardListProps> {
 
   render() {
     return (
-      <ul className={classes['card-list']}>
+      <ul data-testid="cardList" className={classes['card-list']}>
         {this.props.cards.map((card) => (
           <CardItem card={card} key={card.id} />
         ))}

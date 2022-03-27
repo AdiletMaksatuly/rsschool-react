@@ -1,4 +1,4 @@
-import React, { ChangeEventHandler } from 'react';
+import React from 'react';
 import classes from './SearchBar.module.css';
 
 interface SearchBarProps {
@@ -19,17 +19,16 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   }
 
   componentDidMount() {
-    const savedValue = JSON.parse(localStorage.getItem('searchQuery') || '');
+    const savedValue = localStorage.getItem('searchQuery') || '';
 
-    console.log(!!savedValue);
     this.setState({
-      value: savedValue || '',
+      value: savedValue,
     });
-    this.props.onChange(savedValue || '');
+    this.props.onChange(savedValue);
   }
 
   componentWillUnmount() {
-    localStorage.setItem('searchQuery', JSON.stringify(this.state.value));
+    localStorage.setItem('searchQuery', this.state.value);
   }
 
   onChangeHandler(event: React.ChangeEvent<HTMLInputElement>) {

@@ -14,7 +14,7 @@ class CardItem extends React.Component<CardItemProps> {
 
   render() {
     return (
-      <li className={classes['card-item']}>
+      <li className={classes['card-item']} data-testid="cardItem">
         <article className={classes['card']}>
           <img
             src={this.props.card.img}
