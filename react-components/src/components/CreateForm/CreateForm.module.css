@@ -1,0 +1,37 @@
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+.form__control {
+  margin-bottom: 20px;
+  border-radius: 4px;
+  padding: 10px;
+}
+
+.form__input {
+  border-width: 1px;
+}
+
+.form__submit-btn {
+  align-self: flex-start;
+}
+
+.form__file-input-upload-btn {
+  margin-bottom: 0;
+  margin-right: 20px;
+}
+
+.form__radio-label {
+  margin-right: 20px;
+}
+
+.form__file-input-label {
+  padding: 30px;
+  border-radius: 4px;
+  border: 3px dashed #000;
+}
+
+.form__file-input {
+  display: none;
+}
