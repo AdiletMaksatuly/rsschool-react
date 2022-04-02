@@ -1,10 +1,12 @@
 import React from 'react';
 import CardItem from '../CardItem';
-import { ICard } from '../../types/types';
+import { ICard, IUser } from '../../types';
 import classes from './CardList.module.css';
+import MusicCard from '../CardItem/MusicCard';
+import UserCard from '../CardItem/UserCard';
 
 interface CardListProps {
-  cards: ICard[];
+  cards: ICard[] | IUser[];
 }
 
 class CardList extends React.Component<CardListProps> {
@@ -15,9 +17,13 @@ class CardList extends React.Component<CardListProps> {
   render() {
     return (
       <ul data-testid="cardList" className={classes['card-list']}>
-        {this.props.cards.map((card) => (
-          <CardItem card={card} key={card.id} />
-        ))}
+        {this.props.cards.map((card) => {
+          if ('artist' in card) {
+            return <MusicCard card={card} />;
+          } else {
+            return <UserCard card={card} />;
+          }
+        })}
       </ul>
     );
   }

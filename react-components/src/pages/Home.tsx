@@ -10,7 +10,7 @@ import eminemshowCover from '../assets/img/eminemshow.jpeg';
 import donutsCover from '../assets/img/donuts.jpeg';
 import tletCover from '../assets/img/the-low-end-theory.jpeg';
 import liquidswordsCover from '../assets/img/liquid-swords.jpeg';
-import { ICard } from '../types/types';
+import { ICard } from '../types';
 
 type HomeState = {
   cards: ICard[];

@@ -2,13 +2,12 @@ import React from 'react';
 import { ICard } from '../../types';
 import classes from './CardItem.module.css';
 
-interface CardItemProps {
+interface MusicCardProps {
   card: ICard;
-  key: number;
 }
 
-class CardItem extends React.Component<CardItemProps> {
-  constructor(props: CardItemProps) {
+export default class MusicCard extends React.Component<MusicCardProps> {
+  constructor(props: MusicCardProps) {
     super(props);
   }
 
@@ -32,5 +31,3 @@ class CardItem extends React.Component<CardItemProps> {
     );
   }
 }
-
-export default CardItem;
