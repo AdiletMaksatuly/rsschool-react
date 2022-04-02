@@ -11,6 +11,6 @@ export interface IUser {
   name: string;
   birthDate: string;
   birthPlace: string;
-  sex: 'male' | 'female' | '';
+  sex: 'male' | 'female' | any;
   img: string;
 }
