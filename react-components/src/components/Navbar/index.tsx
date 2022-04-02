@@ -17,6 +17,11 @@ const Navbar = () => {
                 About us
               </NavLink>
             </li>
+            <li className="menu__item">
+              <NavLink to="/create-card" className="menu__link">
+                Create Card
+              </NavLink>
+            </li>
           </ul>
         </div>
       </nav>

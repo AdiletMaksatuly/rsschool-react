@@ -19,9 +19,9 @@ class CardList extends React.Component<CardListProps> {
       <ul data-testid="cardList" className={classes['card-list']}>
         {this.props.cards.map((card) => {
           if ('artist' in card) {
-            return <MusicCard card={card} />;
+            return <MusicCard card={card} key={card.id} />;
           } else {
-            return <UserCard card={card} />;
+            return <UserCard card={card} key={card.id} />;
           }
         })}
       </ul>
