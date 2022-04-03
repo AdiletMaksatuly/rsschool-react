@@ -1,5 +1,4 @@
 import React from 'react';
-import CardItem from '../CardItem';
 import { ICard, IUser } from '../../types';
 import classes from './CardList.module.css';
 import MusicCard from '../CardItem/MusicCard';

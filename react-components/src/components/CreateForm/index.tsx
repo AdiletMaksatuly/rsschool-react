@@ -29,16 +29,7 @@ const cssClasses = {
   ),
 };
 
-interface CreateFormProps {
-  onCreate: (userData: IUser) => void;
-}
-
-interface CreateFormState {
-  userData: IUser;
-  isError: boolean;
-  errorElements: Array<HTMLInputElement | HTMLSelectElement | RadioNodeList>;
-  showErrorAlert: boolean;
-}
+type FormElementsToValidate = Array<HTMLInputElement | HTMLSelectElement | RadioNodeList>;
 
 interface FormElements extends HTMLFormControlsCollection {
   username: HTMLInputElement;
@@ -47,6 +38,17 @@ interface FormElements extends HTMLFormControlsCollection {
   'birth-date': HTMLInputElement;
   img: HTMLInputElement;
   agreement: HTMLInputElement;
+}
+
+interface CreateFormProps {
+  onCreate: (userData: IUser) => void;
+}
+
+interface CreateFormState {
+  userData: IUser;
+  isError: boolean;
+  errorElements: FormElementsToValidate;
+  showErrorAlert: boolean;
 }
 
 class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
@@ -78,29 +80,20 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
 
     this.errorStateHandler = this.errorStateHandler.bind(this);
     this.showErrors = this.showErrors.bind(this);
+    this.checkInvalidValues = this.checkInvalidValues.bind(this);
     this.submitHandler = this.submitHandler.bind(this);
   }
 
   errorStateHandler(e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
     if (!this.state.isError) return;
 
-    const deleteError = (
-      errElements: Array<HTMLInputElement | HTMLSelectElement | RadioNodeList>
-    ) => {
+    const deleteError = (errElements: FormElementsToValidate) => {
       if (errElements.length === 0) {
         this.setState({ isError: false });
       }
     };
 
-    if (e.target.name === 'sex') {
-      this.sexInputsWrapperRef.current?.classList.remove('error');
-    } else {
-      if (e.target.id === 'agreement') {
-        e.target.parentElement?.classList.remove('error');
-      } else {
-        e.target.classList.remove('error');
-      }
-    }
+    this.hideErrors(e.target);
 
     if (this.state.errorElements.length) {
       const newErrorElements = this.state.errorElements.filter((errorElement) => {
@@ -140,6 +133,33 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
     });
   }
 
+  hideErrors(target: HTMLInputElement | HTMLSelectElement) {
+    if (target.name === 'sex') {
+      this.sexInputsWrapperRef.current?.classList.remove('error');
+    } else {
+      if (target.id === 'agreement') {
+        target.parentElement?.classList.remove('error');
+      } else {
+        target.classList.remove('error');
+      }
+    }
+  }
+
+  checkInvalidValues(...formFields: FormElementsToValidate) {
+    const errorElements: FormElementsToValidate = [];
+
+    formFields.forEach((formField) => {
+      const checkBoxCondition =
+        'checked' in formField && formField.type === 'checkbox' && formField.checked === false;
+      const selectCondition =
+        'name' in formField && formField.name === 'birth-place' && formField.value === 'default';
+
+      if (checkBoxCondition || selectCondition || !formField.value) errorElements.push(formField);
+    });
+
+    return errorElements;
+  }
+
   submitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!this.formRef.current) return;
@@ -156,33 +176,10 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
       agreement,
     } = elements;
 
-    const haveInvalidValues = (
-      ...formFields: Array<HTMLInputElement | HTMLSelectElement | RadioNodeList>
-    ) => {
-      const errorElements: Array<HTMLInputElement | HTMLSelectElement | RadioNodeList> = [];
-      formFields.forEach((formField) => {
-        if (
-          'checked' in formField &&
-          formField.type === 'checkbox' &&
-          formField.checked === false
-        ) {
-          errorElements.push(formField);
-          return;
-        }
+    const errorElements = this.checkInvalidValues(username, sex, birthPlace, birthDate, agreement);
 
-        if (!formField.value) {
-          errorElements.push(formField);
-        }
-      });
-
-      if (errorElements.length) {
-        this.setState({ errorElements });
-      }
-
-      return !!errorElements.length;
-    };
-
-    if (haveInvalidValues(username, sex, birthPlace, birthDate, agreement) === true) {
+    if (errorElements.length) {
+      this.setState({ errorElements });
       this.setState({ isError: true }, () => this.showErrors());
       this.setState({ showErrorAlert: true });
       return;
@@ -253,7 +250,6 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
           name="birth-place"
           onChange={this.errorStateHandler}
         >
-          optio
           <option value="kz">Kazakhstan</option>
           <option value="ru">Russia</option>
           <option value="ua">Ukraine</option>
