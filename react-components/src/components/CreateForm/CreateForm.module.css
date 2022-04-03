@@ -17,20 +17,6 @@
   align-self: flex-start;
 }
 
-.form__file-input-upload-btn {
-  margin-bottom: 0;
-  margin-right: 20px;
-}
-
 .form__radio-label {
   margin-right: 20px;
-}
-
-.form__file-input-label {
-  padding: 30px;
-  border: 3px dashed #000;
-}
-
-.form__file-input {
-  display: none;
 }

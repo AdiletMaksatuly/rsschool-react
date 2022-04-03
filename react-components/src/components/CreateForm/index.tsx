@@ -1,11 +1,9 @@
 import React, { ChangeEvent } from 'react';
 import { IUser } from '../../types';
+import { joinClasses } from '../../utils';
+import FileInput from '../FileInput';
 import classes from './CreateForm.module.css';
 import StatusAlert from './StatusAlert';
-
-const joinClasses = (...args: string[]) => {
-  return args.join(' ');
-};
 
 const cssClasses = {
   form: joinClasses(classes['form']),
@@ -13,14 +11,8 @@ const cssClasses = {
   formControl: joinClasses(classes['form__control']),
   radioWrapper: joinClasses(classes['form__control']),
   radioLabel: joinClasses(classes['form__radio-label']),
-  fileInputLabel: joinClasses(classes['form__control'], classes['form__file-input-label']),
-  fileInput: joinClasses(classes['form__file-input']),
-  fileInputUploadBtn: joinClasses(
-    'btn',
-    'btn--primary',
-    classes['form__control'],
-    classes['form__file-input-upload-btn']
-  ),
+  fileInputLabel: joinClasses(classes['form__control']),
+  fileInputUploadBtn: joinClasses('btn', 'btn--primary', classes['form__control']),
   submitBtn: joinClasses(
     classes['form__control'],
     classes['form__submit-btn'],
@@ -261,7 +253,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
           <option value="ru">Russia</option>
           <option value="ua">Ukraine</option>
         </select>
-        <label htmlFor="fileInput" className={cssClasses.fileInputLabel}>
+        {/* <label htmlFor="fileInput" className={cssClasses.fileInputLabel}>
           <button className={cssClasses.fileInputUploadBtn} type="button">
             Upload
           </button>
@@ -274,7 +266,13 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
             id="fileInput"
             onChange={this.errorStateHandler}
           />
-        </label>
+        </label> */}
+        <FileInput
+          inputName="img"
+          inputId="imgFileInput"
+          labelClassName={cssClasses.fileInputLabel}
+          buttonClassName={cssClasses.fileInputUploadBtn}
+        />
         <label
           ref={this.agreementCheckboxLabelRef}
           htmlFor="agreement"
