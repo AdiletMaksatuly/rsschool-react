@@ -1,4 +1,5 @@
 import React from 'react';
+import CardList from '../components/CardList';
 import CreateForm from '../components/CreateForm';
 import { IUser } from '../types';
 
@@ -27,6 +28,7 @@ class CreateCardPage extends React.Component<unknown, CreateCardPageState> {
         <div className="page__content container">
           <h1>CreateCardPage</h1>
           <CreateForm onCreate={this.addUser.bind(this)} />
+          <CardList cards={this.state.cards} />
         </div>
       </main>
     );
