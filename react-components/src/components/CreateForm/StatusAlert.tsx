@@ -1,19 +1,20 @@
 import React from 'react';
 
-interface ErrorAlertProps {
+interface StatusAlertProps {
+  type: 'error' | 'success';
   message: string;
   destroy: () => void;
 }
 
-interface ErrorAlertState {
+interface StatusAlertState {
   interval: number;
 }
 
-class ErrorAlert extends React.Component<ErrorAlertProps, ErrorAlertState> {
+class StatusAlert extends React.Component<StatusAlertProps, StatusAlertState> {
   interval: ReturnType<typeof setTimeout> | null = null;
   alertRef = React.createRef<HTMLDivElement>();
 
-  constructor(props: ErrorAlertProps) {
+  constructor(props: StatusAlertProps) {
     super(props);
   }
 
@@ -28,11 +29,11 @@ class ErrorAlert extends React.Component<ErrorAlertProps, ErrorAlertState> {
 
   render() {
     return (
-      <div ref={this.alertRef} className="error-alert">
+      <div ref={this.alertRef} className={`alert alert--${this.props.type}`}>
         {this.props.message}
       </div>
     );
   }
 }
 
-export default ErrorAlert;
+export default StatusAlert;

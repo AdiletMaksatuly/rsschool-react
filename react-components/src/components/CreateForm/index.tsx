@@ -1,7 +1,7 @@
 import React, { ChangeEvent } from 'react';
 import { IUser } from '../../types';
 import classes from './CreateForm.module.css';
-import ErrorAlert from './ErrorAlert';
+import StatusAlert from './StatusAlert';
 
 const joinClasses = (...args: string[]) => {
   return args.join(' ');
@@ -49,6 +49,7 @@ interface CreateFormState {
   isError: boolean;
   errorElements: FormElementsToValidate;
   showErrorAlert: boolean;
+  showSuccessAlert: boolean;
 }
 
 class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
@@ -76,6 +77,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
       isError: true,
       showErrorAlert: false,
       errorElements: [],
+      showSuccessAlert: false,
     };
 
     this.errorStateHandler = this.errorStateHandler.bind(this);
@@ -199,6 +201,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
       () => this.props.onCreate(this.state.userData)
     );
 
+    this.setState({ showSuccessAlert: true });
     this.formRef.current.reset();
   }
 
@@ -289,14 +292,23 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
           Submit
         </button>
         {this.state.isError && this.state.showErrorAlert ? (
-          <ErrorAlert
+          <StatusAlert
+            type="error"
             destroy={() => this.setState({ showErrorAlert: false })}
             message="Make sure you fulfilled all required fields"
           />
         ) : (
           ''
         )}
-        {/* <ErrorAlert message="Make sure you fulfilled all required fields" /> */}
+        {this.state.showSuccessAlert ? (
+          <StatusAlert
+            type="success"
+            destroy={() => this.setState({ showSuccessAlert: false })}
+            message="You have succesfully added new user!"
+          />
+        ) : (
+          ''
+        )}
       </form>
     );
   }
