@@ -252,7 +252,11 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
           className={cssClasses.formControl}
           name="birth-place"
           onChange={this.errorStateHandler}
+          defaultValue="default"
         >
+          <option value="default" disabled>
+            Место проживания
+          </option>
           <option value="kz">Kazakhstan</option>
           <option value="ru">Russia</option>
           <option value="ua">Ukraine</option>
