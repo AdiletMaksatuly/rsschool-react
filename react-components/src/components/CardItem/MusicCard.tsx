@@ -19,6 +19,8 @@ export default class MusicCard extends React.Component<MusicCardProps> {
             src={this.props.card.img}
             className={classes['card__img']}
             alt={this.props.card.title}
+            width="300px"
+            height="300px"
           />
           <h3 className={classes['card__title']}>
             <span>{this.props.card.id} </span>

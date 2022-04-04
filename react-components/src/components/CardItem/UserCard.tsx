@@ -22,6 +22,8 @@ class UserCard extends React.Component<UserCardProps> {
             }
             className={classes['card__img']}
             alt={this.props.card.name}
+            width="300px"
+            height="300px"
           />
           <h3 className={classes['card__title']}>{this.props.card.name}</h3>
           <p>Date of Birth: {this.props.card.birthDate}</p>
