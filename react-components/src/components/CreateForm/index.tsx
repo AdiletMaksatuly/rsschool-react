@@ -41,6 +41,7 @@ interface CreateFormState {
   errorElements: FormElementsToValidate;
   showErrorAlert: boolean;
   showSuccessAlert: boolean;
+  clearPreviewOfFileInput: boolean;
 }
 
 class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
@@ -68,6 +69,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
       showErrorAlert: false,
       errorElements: [],
       showSuccessAlert: false,
+      clearPreviewOfFileInput: false,
     };
 
     this.errorStateHandler = this.errorStateHandler.bind(this);
@@ -223,6 +225,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
 
     this.setState({ showSuccessAlert: true });
     this.formRef.current.reset();
+    this.setState({ clearPreviewOfFileInput: true });
   }
 
   render() {
@@ -282,6 +285,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
           <option value="ua">Ukraine</option>
         </select>
         <FileInput
+          clearPreview={this.state.clearPreviewOfFileInput}
           inputName="img"
           inputId="imgFileInput"
           buttonClassName={cssClasses.fileInputUploadBtn}

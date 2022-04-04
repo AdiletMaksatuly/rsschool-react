@@ -9,6 +9,7 @@ interface FileInputProps {
   wrapperClassName?: string;
   inputName: string;
   inputId: string;
+  clearPreview: boolean;
 }
 
 type CssClasses = {
@@ -61,6 +62,12 @@ class FileInput extends React.Component<FileInputProps, FileInputState> {
     this.changeHandler = this.changeHandler.bind(this);
   }
 
+  componentDidUpdate(prevProps: FileInputProps) {
+    if (prevProps.clearPreview !== this.props.clearPreview) {
+      this.setState({ file: { name: '', URL: '' } });
+    }
+  }
+
   addClassNames(classNamePairs: ClassNamePairs) {
     Object.keys(classNamePairs).forEach((key) => {
       if (classNamePairs[key as keyof CssClasses]) {
@@ -72,8 +79,6 @@ class FileInput extends React.Component<FileInputProps, FileInputState> {
   }
 
   changeHandler(e: ChangeEvent<HTMLInputElement>) {
-    console.log(e);
-
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       const reader = new FileReader();
