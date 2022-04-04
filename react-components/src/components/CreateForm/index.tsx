@@ -146,13 +146,12 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
     formFields.forEach((formField) => {
       const checkBoxCondition =
         'checked' in formField && formField.type === 'checkbox' && formField.checked === false;
-      const fileInputCondition =
-        'files' in formField && formField.type === 'file' && formField.files && !formField.files[0];
+      // const fileInputCondition =
+      //   'files' in formField && formField.type === 'file' && formField.files && !formField.files[0];
       const selectCondition =
         'name' in formField && formField.name === 'birth-place' && formField.value === 'default';
 
-      if (checkBoxCondition || fileInputCondition || selectCondition || !formField.value)
-        errorElements.push(formField);
+      if (checkBoxCondition || selectCondition || !formField.value) errorElements.push(formField);
     });
 
     return errorElements;
@@ -191,14 +190,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
       img,
     } = elements;
 
-    const errorElements = this.checkInvalidValues(
-      username,
-      sex,
-      img,
-      birthPlace,
-      birthDate,
-      agreement
-    );
+    const errorElements = this.checkInvalidValues(username, sex, birthPlace, birthDate, agreement);
 
     if (errorElements.length) {
       this.setState({ errorElements });
@@ -207,7 +199,10 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
       return;
     }
 
-    const imgURL: string | ArrayBuffer | null = await this.createURLToImg(img);
+    let imgURL: string | ArrayBuffer | null = '';
+    if (img.value) {
+      imgURL = await this.createURLToImg(img);
+    }
 
     this.setState(
       {
@@ -239,6 +234,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
           pattern="[A-Za-z]{1,32}"
           ref={this.nameInputRef}
           onChange={this.errorStateHandler}
+          data-testid="name"
         />
         <input
           className={cssClasses.inputs}
@@ -247,6 +243,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
           placeholder="Date of birth"
           ref={this.dateInputRef}
           onChange={this.errorStateHandler}
+          data-testid="birthDate"
         />
         <div ref={this.sexInputsWrapperRef} className={cssClasses.radioWrapper}>
           <label htmlFor="sexMale" className={cssClasses.radioLabel}>
@@ -257,6 +254,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
               name="sex"
               id="sexMale"
               onChange={this.errorStateHandler}
+              data-testid="sex"
             />
           </label>
           <label htmlFor="sexFemale" className={cssClasses.radioLabel}>
@@ -276,6 +274,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
           name="birth-place"
           onChange={this.errorStateHandler}
           defaultValue="default"
+          data-testid="birthPlace"
         >
           <option value="default" disabled>
             Место проживания
@@ -289,6 +288,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
           inputName="img"
           inputId="imgFileInput"
           buttonClassName={cssClasses.fileInputUploadBtn}
+          data-testid="file"
         />
         <label
           ref={this.agreementCheckboxLabelRef}
@@ -300,6 +300,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
             name="agreement"
             id="agreement"
             onChange={this.errorStateHandler}
+            data-testid="agreement"
           />
           Согласен на обработку данных
         </label>
@@ -307,6 +308,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
           ref={this.submitBtnRef}
           disabled={this.state.isError}
           className={cssClasses.submitBtn}
+          data-testid="submit"
         >
           Submit
         </button>
@@ -315,6 +317,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
             type="error"
             destroy={() => this.setState({ showErrorAlert: false })}
             message="Make sure you fulfilled all required fields"
+            data-testid="errorAlert"
           />
         ) : (
           ''
@@ -324,6 +327,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
             type="success"
             destroy={() => this.setState({ showSuccessAlert: false })}
             message="You have succesfully added new user!"
+            data-testid="successAlert"
           />
         ) : (
           ''
