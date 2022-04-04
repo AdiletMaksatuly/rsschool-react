@@ -220,7 +220,9 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
 
     this.setState({ showSuccessAlert: true });
     this.formRef.current.reset();
-    this.setState({ clearPreviewOfFileInput: true });
+    this.setState({ clearPreviewOfFileInput: true }, () =>
+      this.setState({ clearPreviewOfFileInput: false })
+    );
   }
 
   render() {
