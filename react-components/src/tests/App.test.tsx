@@ -7,18 +7,19 @@ import Navbar from '../components/Navbar';
 import CardList from '../components/CardList';
 import Home from '../pages/Home';
 import SearchBar from '../components/SearchBar';
+import CreateCardPage from '../pages/CreateCardPage';
 
 const findLinkFromNavbar = (text: string) => {
   const linkElements = screen.getAllByRole('link');
 
-  return linkElements.find(linkElement => linkElement.textContent?.toLowerCase().includes(text));
+  return linkElements.find((linkElement) => linkElement.textContent?.toLowerCase().includes(text));
 };
 
 const findHeading = (type: string) => {
   const headings = screen.getAllByRole('heading');
 
-  return headings.find(heading =>heading.tagName === type.toUpperCase());
-}
+  return headings.find((heading) => heading.tagName === type.toUpperCase());
+};
 
 // const fakeLocalStorage = (function() {
 //   let store: {[key: string]: string} = {};
@@ -39,8 +40,8 @@ const findHeading = (type: string) => {
 //   };
 // })();
 
-const fakeLocalStorage = (function() {
-  let store: {[key: string]: string} = {};
+const fakeLocalStorage = (function () {
+  let store: { [key: string]: string } = {};
 
   return {
     getItem: jest.fn((key: string) => {
@@ -49,12 +50,12 @@ const fakeLocalStorage = (function() {
     setItem: jest.fn((key: string, value: string) => {
       store[key] = value.toString();
     }),
-    removeItem: function(key: string) {
+    removeItem: function (key: string) {
       delete store[key];
     },
-    clear: function() {
+    clear: function () {
       store = {};
-    }
+    },
   };
 })();
 
@@ -63,7 +64,7 @@ describe('routes testing', () => {
     renderWithRouter(<App />);
     const homeLink = findLinkFromNavbar('home');
     const homeHeading = findHeading('h1');
-    
+
     expect(homeLink).toBeInTheDocument();
     expect(homeLink).toHaveClass('active');
     expect(homeHeading).toBeInTheDocument();
@@ -82,17 +83,26 @@ describe('routes testing', () => {
   test('not found page rendering', () => {
     renderWithRouter(<App />, '/not-existing-route');
     const notFoundText = screen.getByText(/404/i);
-    
+
     expect(notFoundText).toBeInTheDocument();
   });
-})
+
+  test('create card page rendering', () => {
+    renderWithRouter(<App />, '/create-card');
+    const createCardLink = findLinkFromNavbar('create card');
+    const createCardHeading = findHeading('h1');
+
+    expect(createCardLink).toHaveClass('active');
+    expect(createCardHeading).toBeInTheDocument();
+  });
+});
 
 describe('navbar testing', () => {
   test('renders navbar', () => {
     renderWithRouter(<Navbar />);
     const linkElements = screen.getAllByRole('link');
 
-    linkElements.forEach(linkElement => {
+    linkElements.forEach((linkElement) => {
       expect(linkElement).toBeInTheDocument();
     });
     expect(linkElements.length).toBeGreaterThanOrEqual(2);
@@ -101,29 +111,37 @@ describe('navbar testing', () => {
   test('home link click testing', () => {
     renderWithRouter(<Navbar />);
     const homeLink = findLinkFromNavbar('home');
-    
+
     userEvent.click(homeLink!);
     expect(findLinkFromNavbar('home')).toHaveClass('active');
-  })
+  });
 
   test('about us link click testing', () => {
     renderWithRouter(<Navbar />);
     const aboutUsLink = findLinkFromNavbar('about us');
-    
+
     userEvent.click(aboutUsLink!);
     expect(findLinkFromNavbar('about us')).toHaveClass('active');
-  })
+  });
+
+  test('create-card-page link click testing', () => {
+    renderWithRouter(<Navbar />);
+    const createCardLink = findLinkFromNavbar('create card');
+
+    userEvent.click(createCardLink!);
+    expect(findLinkFromNavbar('create card')).toHaveClass('active');
+  });
 });
 
 describe('searchbar testing', () => {
   beforeAll(() => {
     Object.defineProperty(window, 'localStorage', {
-      value: fakeLocalStorage
+      value: fakeLocalStorage,
     });
   });
 
   test('searchbar value getting from local storage when mounting and setting when unmounting', () => {
-    const {unmount} = renderWithRouter(<Home />);
+    const { unmount } = renderWithRouter(<Home />);
 
     expect(localStorage.getItem).toHaveBeenCalledTimes(1);
 
@@ -135,28 +153,86 @@ describe('searchbar testing', () => {
     unmount();
 
     expect(localStorage.setItem).toHaveBeenCalledTimes(1);
-    expect(localStorage.setItem).toHaveBeenCalledWith("searchQuery", randomTextUserWillType);
-    
+    expect(localStorage.setItem).toHaveBeenCalledWith('searchQuery', randomTextUserWillType);
+
     // ошибка
     // expect(localStorage.getItem('searchQuery')).toBe(randomTextUserWillType);
   });
 });
 
 describe('cards list testing', () => {
-
-  test('cards list rendering', async () => {
+  test('cards list rendering', () => {
     renderWithRouter(<Home />);
     const cardsListElement = screen.getByTestId('cardList');
     expect(cardsListElement).toHaveClass('card-list');
-  
-    await expect(cardsListElement.children.length).toBeGreaterThanOrEqual(1);
+
+    expect(cardsListElement.children.length).toBeGreaterThanOrEqual(1);
   });
 
   test('card item rendering', async () => {
     renderWithRouter(<Home />);
     const cardItemElements = screen.getAllByTestId('cardItem');
-    cardItemElements.forEach(cardItemElement => {
+    cardItemElements.forEach((cardItemElement) => {
       expect(cardItemElement).toBeInTheDocument();
     });
+  });
+});
+
+describe('create card form working', () => {
+  test('form rendering', () => {
+    renderWithRouter(<CreateCardPage />);
+    const form = screen.getByTestId('form');
+
+    expect(form).toBeInTheDocument();
+  });
+
+  test('form submitting', async () => {
+    renderWithRouter(<CreateCardPage />);
+    const nameInput = screen.getByTestId('name');
+    const birthDateInput = screen.getByTestId('birthDate');
+    const sexInput = screen.getByTestId('sex');
+    const birthPlaceSelect: HTMLSelectElement = screen.getByTestId('birthPlace');
+    const fileInput: HTMLInputElement = screen.getByTestId('file');
+    const submitBtn = screen.getByTestId('submit');
+    const agreement = screen.getByTestId('agreement');
+
+    const userData = {
+      name: 'Adilet',
+      birthDate: '2020-01-02',
+      birthPlace: 'kz',
+    };
+
+    expect(submitBtn).toBeDisabled();
+
+    userEvent.type(nameInput, userData.name);
+    expect(submitBtn).not.toBeDisabled();
+
+    userEvent.type(birthDateInput, userData.birthDate);
+    userEvent.click(sexInput);
+
+    expect(sexInput).toBeChecked();
+
+    userEvent.selectOptions(birthPlaceSelect, [userData.birthPlace]);
+    expect(birthPlaceSelect.value).toBe(userData.birthPlace);
+
+    const file = new File(['hello'], 'hello.png', { type: 'image/png' });
+    userEvent.upload(fileInput, file);
+    expect(fileInput.files![0]).toStrictEqual(file);
+    expect(fileInput.files?.item(0)).toStrictEqual(file);
+    expect(fileInput.files).toHaveLength(1);
+
+    userEvent.click(agreement);
+    expect(agreement).toBeChecked();
+
+    userEvent.click(submitBtn);
+
+    const successAlert = await screen.findByTestId('alert-success');
+    expect(successAlert).toBeVisible();
+
+    const cardList = await screen.findByTestId('cardList');
+    expect(cardList).toBeInTheDocument();
+
+    const headingOfNewCard = screen.getByText(userData.name);
+    expect(headingOfNewCard).toBeInTheDocument();
   });
 });

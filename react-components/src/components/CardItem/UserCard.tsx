@@ -6,7 +6,19 @@ interface UserCardProps {
   card: IUser;
 }
 
+type ICountries = {
+  kz: 'Kazakhstan';
+  ru: 'Russia';
+  ua: 'Ukraine';
+};
+
 class UserCard extends React.Component<UserCardProps> {
+  countries: ICountries = {
+    kz: 'Kazakhstan',
+    ru: 'Russia',
+    ua: 'Ukraine',
+  };
+
   constructor(props: UserCardProps) {
     super(props);
   }
@@ -27,7 +39,7 @@ class UserCard extends React.Component<UserCardProps> {
           />
           <h3 className={classes['card__title']}>{this.props.card.name}</h3>
           <p>Date of Birth: {this.props.card.birthDate}</p>
-          <p>Birth place: {this.props.card.birthPlace}</p>
+          <p>Birth place: {this.countries[this.props.card.birthPlace as keyof ICountries]}</p>
           <p>Sex: {this.props.card.sex}</p>
         </article>
       </li>

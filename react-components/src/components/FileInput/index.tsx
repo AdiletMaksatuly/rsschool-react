@@ -114,6 +114,7 @@ class FileInput extends React.Component<FileInputProps, FileInputState> {
           name={this.props.inputName}
           id={this.props.inputId}
           onChange={this.changeHandler}
+          data-testid="file"
         />
 
         {this.state.file.URL ? (

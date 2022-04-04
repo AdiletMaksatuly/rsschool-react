@@ -29,7 +29,11 @@ class StatusAlert extends React.Component<StatusAlertProps, StatusAlertState> {
 
   render() {
     return (
-      <div ref={this.alertRef} className={`alert alert--${this.props.type}`}>
+      <div
+        data-testid={`alert-${this.props.type}`}
+        ref={this.alertRef}
+        className={`alert alert--${this.props.type}`}
+      >
         {this.props.message}
       </div>
     );

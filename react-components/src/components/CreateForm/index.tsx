@@ -227,7 +227,12 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
 
   render() {
     return (
-      <form className={cssClasses.form} ref={this.formRef} onSubmit={this.submitHandler}>
+      <form
+        data-testid="form"
+        className={cssClasses.form}
+        ref={this.formRef}
+        onSubmit={this.submitHandler}
+      >
         <input
           className={cssClasses.inputs}
           type="text"
@@ -290,7 +295,6 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
           inputName="img"
           inputId="imgFileInput"
           buttonClassName={cssClasses.fileInputUploadBtn}
-          data-testid="file"
         />
         <label
           ref={this.agreementCheckboxLabelRef}
