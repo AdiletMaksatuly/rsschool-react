@@ -11,7 +11,6 @@ const cssClasses = {
   formControl: joinClasses(classes['form__control']),
   radioWrapper: joinClasses(classes['form__control']),
   radioLabel: joinClasses(classes['form__radio-label']),
-  fileInputLabel: joinClasses(classes['form__control']),
   fileInputUploadBtn: joinClasses('btn', 'btn--primary', classes['form__control']),
   submitBtn: joinClasses(
     classes['form__control'],
@@ -51,7 +50,6 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
   dateInputRef = React.createRef<HTMLInputElement>();
   sexInputsWrapperRef = React.createRef<HTMLInputElement>();
   selectRef = React.createRef<HTMLSelectElement>();
-  fileInputRef = React.createRef<HTMLInputElement>();
   agreementCheckboxLabelRef = React.createRef<HTMLLabelElement>();
 
   constructor(props: CreateFormProps) {
@@ -75,6 +73,7 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
     this.errorStateHandler = this.errorStateHandler.bind(this);
     this.showErrors = this.showErrors.bind(this);
     this.checkInvalidValues = this.checkInvalidValues.bind(this);
+    this.createURLToImg = this.createURLToImg.bind(this);
     this.submitHandler = this.submitHandler.bind(this);
   }
 
@@ -145,16 +144,36 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
     formFields.forEach((formField) => {
       const checkBoxCondition =
         'checked' in formField && formField.type === 'checkbox' && formField.checked === false;
+      const fileInputCondition =
+        'files' in formField && formField.type === 'file' && formField.files && !formField.files[0];
       const selectCondition =
         'name' in formField && formField.name === 'birth-place' && formField.value === 'default';
 
-      if (checkBoxCondition || selectCondition || !formField.value) errorElements.push(formField);
+      if (checkBoxCondition || fileInputCondition || selectCondition || !formField.value)
+        errorElements.push(formField);
     });
 
     return errorElements;
   }
 
-  submitHandler(e: React.FormEvent<HTMLFormElement>) {
+  async createURLToImg(img: HTMLInputElement) {
+    const creating = new Promise<string | ArrayBuffer | null>((resolve) => {
+      if (img.files?.length) {
+        const file = img.files[0];
+        const reader = new FileReader();
+
+        reader.readAsDataURL(file);
+
+        reader.onload = () => {
+          resolve(reader.result);
+        };
+      }
+    });
+
+    return await creating;
+  }
+
+  async submitHandler(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!this.formRef.current) return;
 
@@ -166,11 +185,18 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
       sex,
       'birth-place': birthPlace,
       'birth-date': birthDate,
-      img,
       agreement,
+      img,
     } = elements;
 
-    const errorElements = this.checkInvalidValues(username, sex, birthPlace, birthDate, agreement);
+    const errorElements = this.checkInvalidValues(
+      username,
+      sex,
+      img,
+      birthPlace,
+      birthDate,
+      agreement
+    );
 
     if (errorElements.length) {
       this.setState({ errorElements });
@@ -179,11 +205,13 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
       return;
     }
 
+    const imgURL: string | ArrayBuffer | null = await this.createURLToImg(img);
+
     this.setState(
       {
         userData: {
           id: Date.now(),
-          img: img.value,
+          img: imgURL,
           name: username.value,
           birthDate: birthDate.value,
           birthPlace: birthPlace.value,
@@ -253,24 +281,9 @@ class CreateForm extends React.Component<CreateFormProps, CreateFormState> {
           <option value="ru">Russia</option>
           <option value="ua">Ukraine</option>
         </select>
-        {/* <label htmlFor="fileInput" className={cssClasses.fileInputLabel}>
-          <button className={cssClasses.fileInputUploadBtn} type="button">
-            Upload
-          </button>
-          ...or just drop a file here
-          <input
-            ref={this.fileInputRef}
-            type="file"
-            className={cssClasses.fileInput}
-            name="img"
-            id="fileInput"
-            onChange={this.errorStateHandler}
-          />
-        </label> */}
         <FileInput
           inputName="img"
           inputId="imgFileInput"
-          labelClassName={cssClasses.fileInputLabel}
           buttonClassName={cssClasses.fileInputUploadBtn}
         />
         <label

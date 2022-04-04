@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ChangeEvent } from 'react';
 import { joinClasses } from '../../utils';
 import classes from './FileInput.module.css';
 
@@ -6,20 +6,25 @@ interface FileInputProps {
   labelClassName?: string;
   buttonClassName?: string;
   inputClassName?: string;
+  wrapperClassName?: string;
   inputName: string;
   inputId: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  ref?: 'string';
 }
 
 type CssClasses = {
+  wrapperClassName: string[];
   labelClassName: string[];
   inputClassName: string[];
   buttonClassName: string[];
+  previewClassName: string[];
 };
 
 interface FileInputState {
   cssClasses: CssClasses;
+  file: {
+    name: string;
+    URL: string | ArrayBuffer | null;
+  };
 }
 
 type ClassNamePairs = {
@@ -27,48 +32,98 @@ type ClassNamePairs = {
 };
 
 class FileInput extends React.Component<FileInputProps, FileInputState> {
-  cssClasses = {
-    labelClassName: [classes['file-input-label']],
-    inputClassName: [classes['file-input']],
-    buttonClassName: [classes['file-input-upload-btn']],
-  };
+  inputRef = React.createRef<HTMLInputElement>();
+
   constructor(props: FileInputProps) {
     super(props);
 
+    this.state = {
+      file: {
+        name: '',
+        URL: '',
+      },
+      cssClasses: {
+        wrapperClassName: [classes['file-input-wrapper']],
+        labelClassName: [classes['file-input-label']],
+        inputClassName: [classes['file-input']],
+        buttonClassName: [classes['file-input-upload-btn']],
+        previewClassName: [classes['preview']],
+      },
+    };
+
     this.addClassNames.call(this, {
+      wrapperClassName: this.props.wrapperClassName ? this.props.wrapperClassName : '',
       labelClassName: this.props.labelClassName ? this.props.labelClassName : '',
       buttonClassName: this.props.buttonClassName ? this.props.buttonClassName : '',
       inputClassName: this.props.inputClassName ? this.props.inputClassName : '',
+      previewClassName: '',
     });
+    this.changeHandler = this.changeHandler.bind(this);
   }
 
   addClassNames(classNamePairs: ClassNamePairs) {
     Object.keys(classNamePairs).forEach((key) => {
       if (classNamePairs[key as keyof CssClasses]) {
-        this.cssClasses[key as keyof CssClasses].push(classNamePairs[key as keyof CssClasses]);
+        this.state.cssClasses[key as keyof CssClasses].push(
+          classNamePairs[key as keyof CssClasses]
+        );
       }
     });
   }
 
+  changeHandler(e: ChangeEvent<HTMLInputElement>) {
+    console.log(e);
+
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        this.setState({ file: { name: file.name, URL: reader.result } });
+      };
+    }
+  }
+
   render() {
     return (
-      <label
-        htmlFor={this.props.inputId}
-        className={joinClasses(...this.cssClasses.labelClassName)}
-      >
-        <button className={joinClasses(...this.cssClasses.buttonClassName)} type="button">
-          Upload
-        </button>
-        ...or just drop a file here
+      <div className={joinClasses(...this.state.cssClasses.wrapperClassName)}>
+        <label
+          htmlFor={this.props.inputId}
+          className={joinClasses(...this.state.cssClasses.labelClassName)}
+        >
+          <button
+            onClick={() => this.inputRef.current?.click()}
+            className={joinClasses(...this.state.cssClasses.buttonClassName)}
+            type="button"
+          >
+            Upload
+          </button>
+          ...or just drop a file here
+        </label>
+
         <input
-          ref={this.props.ref}
+          ref={this.inputRef}
           type="file"
-          className={joinClasses(...this.cssClasses.inputClassName)}
+          className={joinClasses(...this.state.cssClasses.inputClassName)}
           name={this.props.inputName}
           id={this.props.inputId}
-          onChange={this.props.onChange}
+          onChange={this.changeHandler}
         />
-      </label>
+
+        {this.state.file.URL ? (
+          <figure className={joinClasses(...this.state.cssClasses.previewClassName)}>
+            <img
+              style={{ width: '100%' }}
+              src={`${this.state.file.URL}`}
+              alt={this.state.file.name}
+            />
+            <figcaption title={this.state.file.name}>{this.state.file.name}</figcaption>
+          </figure>
+        ) : (
+          ''
+        )}
+      </div>
     );
   }
 }
