@@ -14,78 +14,29 @@ import { ICard } from '../types';
 
 type HomeState = {
   cards: ICard[];
+  totalPages: number;
   searchQuery: string;
 };
 
 class Home extends React.Component<unknown, HomeState> {
   state: HomeState = {
-    cards: [
-      {
-        id: 1,
-        title: 'Illmatic',
-        artist: 'Nas',
-        body: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aut non ullam illo nisi molestiae, incidunt dolore dolorum? Quis, tempora debitis!',
-        img: illmaticCover,
-      },
-      {
-        id: 2,
-        title: 'The Eminem Show',
-        artist: 'Eminem',
-        body: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aut non ullam illo nisi molestiae, incidunt dolore dolorum? Quis, tempora debitis!',
-        img: eminemshowCover,
-      },
-      {
-        id: 3,
-        title: 'Liquid Swords',
-        artist: 'GZA',
-        body: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aut non ullam illo nisi molestiae, incidunt dolore dolorum? Quis, tempora debitis!',
-        img: liquidswordsCover,
-      },
-      {
-        id: 4,
-        title: 'The Low End Theory',
-        artist: 'A Tribe Called Quest',
-        body: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aut non ullam illo nisi molestiae, incidunt dolore dolorum? Quis, tempora debitis!',
-        img: tletCover,
-      },
-      {
-        id: 5,
-        title: 'Donuts',
-        artist: 'J Dilla',
-        body: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aut non ullam illo nisi molestiae, incidunt dolore dolorum? Quis, tempora debitis!',
-        img: donutsCover,
-      },
-      {
-        id: 6,
-        title: 'Enter the Wu-Tang: 36 Chambers',
-        artist: 'Wu-Tang Clan',
-        body: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aut non ullam illo nisi molestiae, incidunt dolore dolorum? Quis, tempora debitis!',
-        img: wutangCover,
-      },
-      {
-        id: 7,
-        title: 'MM..FOOD',
-        artist: 'MF DOOM',
-        body: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aut non ullam illo nisi molestiae, incidunt dolore dolorum? Quis, tempora debitis!',
-        img: mmfoodCover,
-      },
-      {
-        id: 8,
-        title: 'good.kid.maad.city',
-        artist: 'Kendrick Lamar',
-        body: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aut non ullam illo nisi molestiae, incidunt dolore dolorum? Quis, tempora debitis!',
-        img: gkmcCover,
-      },
-      {
-        id: 9,
-        title: 'Kids See Ghosts',
-        artist: 'KIDS SEE GHOSTS',
-        body: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Aut non ullam illo nisi molestiae, incidunt dolore dolorum? Quis, tempora debitis!',
-        img: kssCover,
-      },
-    ],
+    cards: [],
     searchQuery: '',
+    totalPages: 1,
   };
+
+  async componentDidMount() {
+    try {
+      const response = await fetch('https://rickandmortyapi.com/api/character');
+      const { results: cardsData, info } = await response.json();
+
+      console.log(cardsData);
+
+      this.setState({ cards: cardsData, totalPages: info.pages });
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   constructor(props: unknown) {
     super(props);
