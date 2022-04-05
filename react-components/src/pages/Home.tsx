@@ -76,8 +76,6 @@ class Home extends React.Component<unknown, HomeState> {
       if (response.ok) {
         const { results: cardsData, info } = await response.json();
 
-        console.log(cardsData);
-
         this.setState({
           cards: cardsData,
           pageInfo: { ...this.state.pageInfo, totalPages: info.pages },
