@@ -34,9 +34,9 @@ export default class CharacterCard extends React.Component<CharacterCardProps> {
             {this.props.card.name}
           </h3>
           <span>Species: {this.props.card.species}</span>
-          <p>Origin: {this.props.card.origin.name}</p>
-          <p>Gender: {this.props.card.gender}</p>
-          <p>Status: {this.props.card.status}</p>
+          <button className={[classes['card__btn'], 'btn', 'btn--primary'].join(' ')}>
+            READ MORE...
+          </button>
         </article>
       </li>
     );

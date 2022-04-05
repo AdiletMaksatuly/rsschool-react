@@ -6,6 +6,10 @@ export interface ICard {
   status: string;
   gender: string;
   species: string;
+  location: {
+    name: string;
+    url: string;
+  };
   origin: {
     name: string;
   };

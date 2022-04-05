@@ -46,14 +46,28 @@ class Modal extends React.Component<ModalProps, unknown> {
               width="300px"
               height="300px"
             />
-            <h3 className={classes['modal-card__title']}>
-              <span>{this.props.card.id} </span>
-              {this.props.card.name}
-            </h3>
-            <span>Species: {this.props.card.species}</span>
-            <p>Origin: {this.props.card.origin.name}</p>
-            <p>Gender: {this.props.card.gender}</p>
-            <p>Status: {this.props.card.status}</p>
+            <div className={classes['modal-card__info']}>
+              <h3 className={classes['modal-card__title']}>{this.props.card.name}</h3>
+              <p
+                className={[
+                  classes['modal-card__status'],
+                  this.props.card.status === 'Alive'
+                    ? classes['modal-card__status--alive']
+                    : classes['modal-card__status--dead'],
+                ].join(' ')}
+              >
+                {this.props.card.status} - {this.props.card.species}
+              </p>
+
+              <p className={classes['modal-card__text']}>
+                Last known location:
+                <p>{this.props.card.location.name}</p>
+              </p>
+              <p className={classes['modal-card__text']}>
+                Gender:
+                <p>{this.props.card.gender}</p>
+              </p>
+            </div>
           </article>
         </div>
       </div>

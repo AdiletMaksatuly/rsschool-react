@@ -36,8 +36,12 @@
 .modal__content {
   position: relative;
   z-index: 2;
-  padding: 20px;
-  background-color: #fff;
+  flex-grow: 1;
+  max-width: 650px;
+  margin: 50px;
+  border-radius: 20px;
+  background-color: rgb(32, 35, 41);
+  color: #fff;
 }
 
 @keyframes fadeIn {
@@ -58,4 +62,49 @@
   to {
     opacity: 0;
   }
+}
+
+.modal-card {
+  display: flex;
+  overflow: hidden;
+}
+
+.modal-card__image {
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+}
+
+.modal-card__info {
+  padding: 10px 20px;
+  flex-grow: 1;
+  font-size: 20px;
+}
+.modal-card__title {
+  font-size: 24px;
+}
+
+.modal-card__text {
+  font-weight: 500;
+  color: rgb(158, 158, 158);
+}
+
+.modal-card__text p {
+  margin: 0;
+  font-weight: normal;
+  color: #fff;
+  margin-top: 10px;
+}
+
+.modal-card__status::before {
+  content: '•';
+  margin-right: 10px;
+  font-size: 24px;
+}
+
+.modal-card__status--alive::before {
+  color: green;
+}
+
+.modal-card__status--dead::before {
+  color: red;
 }
