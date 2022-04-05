@@ -54,6 +54,12 @@ input {
 
 .btn {
   border: none;
+  padding: 10px 20px;
+  border-radius: 20px;
+}
+
+.btn:active {
+  transform: scale(0.95);
 }
 
 .btn:disabled {

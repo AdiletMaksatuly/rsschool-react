@@ -1,7 +1,7 @@
 import React from 'react';
 import { ICard, IUser } from '../../types';
 import classes from './CardList.module.css';
-import MusicCard from '../CardItem/MusicCard';
+import CharacterCard from '../CardItem/CharacterCard';
 import UserCard from '../CardItem/UserCard';
 
 interface CardListProps {
@@ -17,8 +17,8 @@ class CardList extends React.Component<CardListProps> {
     return (
       <ul data-testid="cardList" className={classes['card-list']}>
         {this.props.cards.map((card) => {
-          if ('artist' in card) {
-            return <MusicCard card={card} key={card.id} />;
+          if ('origin' in card) {
+            return <CharacterCard card={card} key={card.id} />;
           } else {
             return <UserCard card={card} key={card.id} />;
           }

@@ -11,7 +11,7 @@ const cssClasses = {
   formControl: joinClasses(classes['form__control']),
   radioWrapper: joinClasses(classes['form__control']),
   radioLabel: joinClasses(classes['form__radio-label']),
-  fileInputUploadBtn: joinClasses('btn', 'btn--primary', classes['form__control']),
+  fileInputUploadBtn: joinClasses('btn', 'btn--primary'),
   submitBtn: joinClasses(
     classes['form__control'],
     classes['form__submit-btn'],

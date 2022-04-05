@@ -1,9 +1,14 @@
 export interface ICard {
   id: number;
-  title: string;
-  artist: string;
-  body: string;
+  name: string;
+  image: string;
   img: string;
+  status: string;
+  gender: string;
+  species: string;
+  origin: {
+    name: string;
+  };
 }
 
 export interface IUser {
