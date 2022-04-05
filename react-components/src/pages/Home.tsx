@@ -18,6 +18,7 @@ type HomeState = {
   };
   isLoading: boolean;
   modalData: ICard | null;
+  shouldResetBtnInSearchInputBeDisabled: boolean;
 };
 
 class Home extends React.Component<unknown, HomeState> {
@@ -34,6 +35,7 @@ class Home extends React.Component<unknown, HomeState> {
     },
     isLoading: true,
     modalData: null,
+    shouldResetBtnInSearchInputBeDisabled: true,
   };
 
   constructor(props: unknown) {
@@ -41,7 +43,26 @@ class Home extends React.Component<unknown, HomeState> {
   }
 
   componentDidMount() {
-    this.fetchCharacters();
+    const savedValue = localStorage.getItem('searchQuery') || '';
+
+    this.setState(
+      {
+        searchQuery: savedValue,
+      },
+      () => {
+        if (this.state.searchQuery !== '') {
+          this.setState({
+            shouldResetBtnInSearchInputBeDisabled: false,
+          });
+        }
+
+        this.fetchCharacters();
+      }
+    );
+  }
+
+  componentWillUnmount() {
+    localStorage.setItem('searchQuery', this.state.searchQuery);
   }
 
   fetchCharacters = async () => {
@@ -99,15 +120,21 @@ class Home extends React.Component<unknown, HomeState> {
     this.setState({ modalData: null });
   };
 
+  updateSearchQuery = (value: string) => {
+    this.setState({ searchQuery: value });
+  };
+
   render() {
     return (
       <main className="page">
         <div className="page__content container">
           <h1>Home page</h1>
           <SearchBar
-            onChange={(value) => this.setState({ searchQuery: value })}
+            value={this.state.searchQuery}
+            onChange={this.updateSearchQuery}
             onReset={this.searchResetHandler}
             onSubmit={this.searchCharacters}
+            isResetBtnDisabled={this.state.shouldResetBtnInSearchInputBeDisabled}
           />
 
           {this.state.error.isError ? (

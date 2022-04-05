@@ -2,13 +2,14 @@ import React from 'react';
 import classes from './SearchBar.module.css';
 
 interface SearchBarProps {
+  value: string;
   onChange: (value: string) => void;
   onSubmit: () => void;
   onReset: () => void;
+  isResetBtnDisabled: boolean;
 }
 
 interface SearchBarState {
-  value: string;
   isError: boolean;
   isResetBtnDisabled: boolean;
 }
@@ -20,29 +21,20 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
     super(props);
 
     this.state = {
-      value: '',
       isError: false,
-      isResetBtnDisabled: true,
+      isResetBtnDisabled: this.props.isResetBtnDisabled,
     };
   }
 
-  componentDidMount() {
-    const savedValue = localStorage.getItem('searchQuery') || '';
-
-    this.setState({
-      value: savedValue,
-    });
-    this.props.onChange(savedValue);
-  }
-
-  componentWillUnmount() {
-    localStorage.setItem('searchQuery', this.state.value);
+  componentDidUpdate(prevProps: SearchBarProps) {
+    if (prevProps.isResetBtnDisabled !== this.props.isResetBtnDisabled) {
+      this.setState({ isResetBtnDisabled: this.props.isResetBtnDisabled });
+    }
   }
 
   onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (this.state.isError) this.setState({ isError: false });
 
-    this.setState({ value: event.target.value });
     this.props.onChange(event.target.value);
   };
 
@@ -51,7 +43,7 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
 
     if (this.state.isError) this.setState({ isError: false });
 
-    this.setState({ value: '' });
+    this.props.onChange('');
     this.props.onReset();
     this.setState({ isResetBtnDisabled: true });
   };
@@ -59,7 +51,7 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
   onSubmitHandler = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (this.state.value === '') {
+    if (this.props.value === '') {
       this.setState({ isError: true });
       return;
     }
@@ -72,7 +64,7 @@ class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
     return (
       <form ref={this.formRef} onSubmit={this.onSubmitHandler} onReset={this.onResetHandler}>
         <input
-          value={this.state.value}
+          value={this.props.value}
           onChange={this.onChangeHandler}
           type="search"
           placeholder="Type something..."
