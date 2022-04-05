@@ -1,8 +1,8 @@
 import React from 'react';
-import { isError } from 'util';
 import CardList from '../components/CardList';
 import SearchBar from '../components/SearchBar';
 import { ICard } from '../types';
+
 type HomeState = {
   cards: ICard[];
   pageInfo: {
@@ -15,7 +15,9 @@ type HomeState = {
     isError: boolean;
     message?: string;
   };
+  isLoading: boolean;
 };
+
 class Home extends React.Component<unknown, HomeState> {
   state: HomeState = {
     cards: [],
@@ -28,21 +30,30 @@ class Home extends React.Component<unknown, HomeState> {
     error: {
       isError: false,
     },
+    isLoading: true,
   };
+
   constructor(props: unknown) {
     super(props);
   }
+
   componentDidMount() {
     this.fetchCharacters();
   }
+
   fetchCharacters = async () => {
     try {
+      this.setState({ isLoading: true });
+
       const response = await fetch(
         `https://rickandmortyapi.com/api/character/?page=${this.state.pageInfo.currentPage}&name=${this.state.searchQuery}`
       );
+
       if (response.ok) {
         const { results: cardsData, info } = await response.json();
+
         console.log(cardsData);
+
         this.setState({
           cards: cardsData,
           pageInfo: { ...this.state.pageInfo, totalPages: info.pages },
@@ -54,22 +65,29 @@ class Home extends React.Component<unknown, HomeState> {
       if ((error as Error).message === '404') {
         this.setState({ error: { isError: true, message: 'Not found' } });
       }
+    } finally {
+      this.setState({ isLoading: false });
     }
   };
+
   searchCharacters = () => {
     if (this.state.error.isError) {
       this.setState({ error: { isError: false, message: '' } });
     }
+
     this.fetchCharacters();
   };
+
   searchResetHandler = () => {
     this.setState({ searchQuery: '' }, () => this.searchCharacters());
   };
+
   componentDidUpdate = (_: unknown, prevState: HomeState) => {
     if (prevState.searchQuery !== this.state.searchQuery) {
       this.setState({ prevSearchQuery: prevState.searchQuery });
     }
   };
+
   render() {
     return (
       <main className="page">
@@ -80,8 +98,11 @@ class Home extends React.Component<unknown, HomeState> {
             onReset={this.searchResetHandler}
             onSubmit={this.searchCharacters}
           />
+
           {this.state.error.isError ? (
             <div>Not found... Try to enter another search query</div>
+          ) : this.state.isLoading ? (
+            <div>Loading...</div>
           ) : (
             <CardList cards={this.state.cards} />
           )}
@@ -90,4 +111,5 @@ class Home extends React.Component<unknown, HomeState> {
     );
   }
 }
+
 export default Home;
