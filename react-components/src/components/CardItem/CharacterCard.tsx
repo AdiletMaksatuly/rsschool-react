@@ -33,7 +33,7 @@ export default class CharacterCard extends React.Component<CharacterCardProps> {
             <span>{this.props.card.id} </span>
             {this.props.card.name}
           </h3>
-          <span>Species: {this.props.card.species}</span>
+          <p>Species: {this.props.card.species}</p>
           <button className={[classes['card__btn'], 'btn', 'btn--primary'].join(' ')}>
             READ MORE...
           </button>
