@@ -1,5 +1,6 @@
 import React from 'react';
 import CardList from '../components/CardList';
+import Modal from '../components/Modal/Modal';
 import SearchBar from '../components/SearchBar';
 import { ICard } from '../types';
 
@@ -16,6 +17,7 @@ type HomeState = {
     message?: string;
   };
   isLoading: boolean;
+  modalData: ICard | null;
 };
 
 class Home extends React.Component<unknown, HomeState> {
@@ -31,6 +33,7 @@ class Home extends React.Component<unknown, HomeState> {
       isError: false,
     },
     isLoading: true,
+    modalData: null,
   };
 
   constructor(props: unknown) {
@@ -88,6 +91,14 @@ class Home extends React.Component<unknown, HomeState> {
     }
   };
 
+  showModal = (card: ICard) => {
+    this.setState({ modalData: card });
+  };
+
+  closeModal = () => {
+    this.setState({ modalData: null });
+  };
+
   render() {
     return (
       <main className="page">
@@ -104,7 +115,13 @@ class Home extends React.Component<unknown, HomeState> {
           ) : this.state.isLoading ? (
             <div>Loading...</div>
           ) : (
-            <CardList cards={this.state.cards} />
+            <CardList cards={this.state.cards} onClick={this.showModal} />
+          )}
+
+          {this.state.modalData ? (
+            <Modal card={this.state.modalData} onClose={this.closeModal} />
+          ) : (
+            ''
           )}
         </div>
       </main>

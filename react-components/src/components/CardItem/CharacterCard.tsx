@@ -4,6 +4,7 @@ import classes from './CardItem.module.css';
 
 interface CharacterCardProps {
   card: ICard;
+  onClick?: (card: ICard) => void;
 }
 
 export default class CharacterCard extends React.Component<CharacterCardProps> {
@@ -11,9 +12,15 @@ export default class CharacterCard extends React.Component<CharacterCardProps> {
     super(props);
   }
 
+  onClickHandler = () => {
+    if (this.props.onClick) {
+      this.props.onClick(this.props.card);
+    }
+  };
+
   render() {
     return (
-      <li className={classes['card-item']} data-testid="cardItem">
+      <li className={classes['card-item']} data-testid="cardItem" onClick={this.onClickHandler}>
         <article className={classes['card']}>
           <img
             src={this.props.card.image}

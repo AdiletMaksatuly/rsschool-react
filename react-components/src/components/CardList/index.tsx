@@ -6,6 +6,7 @@ import UserCard from '../CardItem/UserCard';
 
 interface CardListProps {
   cards: ICard[] | IUser[];
+  onClick?: (card: ICard) => void;
 }
 
 class CardList extends React.Component<CardListProps> {
@@ -18,7 +19,7 @@ class CardList extends React.Component<CardListProps> {
       <ul data-testid="cardList" className={classes['card-list']}>
         {this.props.cards.map((card) => {
           if ('origin' in card) {
-            return <CharacterCard card={card} key={card.id} />;
+            return <CharacterCard card={card} key={card.id} onClick={this.props.onClick} />;
           } else {
             return <UserCard card={card} key={card.id} />;
           }
