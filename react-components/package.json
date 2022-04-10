@@ -77,6 +77,9 @@
     },
     "root": true
   },
+  "jest": {
+    "resetMocks": false
+  },
   "browserslist": {
     "production": [
       ">0.2%",
@@ -104,6 +107,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^4.0.0",
     "husky": "^7.0.4",
+    "jest-localstorage-mock": "^2.4.19",
     "prettier": "^2.5.1"
   }
 }
