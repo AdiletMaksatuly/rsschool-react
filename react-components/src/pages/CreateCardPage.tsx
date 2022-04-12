@@ -1,38 +1,24 @@
-import React from 'react';
+import React, { useState } from 'react';
 import CardList from '../components/CardList';
 import CreateForm from '../components/CreateForm';
 import { IUser } from '../types';
 
-interface CreateCardPageState {
-  cards: IUser[];
-}
+const CreateCardPage: React.FC = () => {
+  const [cards, setCards] = useState<IUser[]>([]);
 
-class CreateCardPage extends React.Component<unknown, CreateCardPageState> {
-  constructor(props: unknown) {
-    super(props);
+  const addUser = (userData: IUser) => {
+    setCards([...cards, userData]);
+  };
 
-    this.state = {
-      cards: [],
-    };
-  }
-
-  addUser(userData: IUser) {
-    this.setState({
-      cards: [...this.state.cards, userData],
-    });
-  }
-
-  render() {
-    return (
-      <main className="page">
-        <div className="page__content container">
-          <h1>CreateCardPage</h1>
-          <CreateForm onCreate={this.addUser.bind(this)} />
-          <CardList cards={this.state.cards} />
-        </div>
-      </main>
-    );
-  }
-}
+  return (
+    <main className="page">
+      <div className="page__content container">
+        <h1>CreateCardPage</h1>
+        <CreateForm onCreate={addUser} />
+        <CardList cards={cards} />
+      </div>
+    </main>
+  );
+};
 
 export default CreateCardPage;
