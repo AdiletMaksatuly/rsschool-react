@@ -4,32 +4,21 @@ import Modal from '../components/Modal/Modal';
 import SearchBar from '../components/SearchBar';
 import { ICard } from '../types';
 
-type HomeState = {
-  cards: ICard[];
-  pageInfo: {
-    totalPages: number;
-    currentPage: number;
-  };
-  searchQuery: string;
-  prevSearchQuery: string;
-  error: {
+const Home: React.FC = () => {
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [pageInfo, setPageInfo] = useState<{ totalPages: number; currentPage: number }>({
+    totalPages: 1,
+    currentPage: 1,
+  });
+  const [cards, setCards] = useState<ICard[]>([]);
+  const [error, setError] = useState<{
     isError: boolean;
     message?: string;
-  };
-  isLoading: boolean;
-  modalData: ICard | null;
-  shouldResetBtnInSearchInputBeDisabled: boolean;
-};
-
-const Home: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
-  const [pageInfo, setPageInfo] = useState({ totalPages: 1, currentPage: 1 });
-  const [cards, setCards] = useState([]);
-  const [error, setError] = useState({ isError: false, message: '' });
+  }>({ isError: false, message: '' });
   const [modalData, setModalData] = useState<ICard | null>(null);
   const [shouldResetBtnInSearchInputBeDisabled, setShouldResetBtnInSearchInputBeDisabled] =
-    useState(true);
+    useState<boolean>(true);
 
   useEffect(() => {
     const savedValue = localStorage.getItem('searchQuery') || '';
