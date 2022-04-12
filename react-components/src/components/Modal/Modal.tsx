@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { ICard } from '../../types';
 import classes from './Modal.module.css';
 
@@ -7,72 +7,68 @@ interface ModalProps {
   onClose: () => void;
 }
 
-class Modal extends React.Component<ModalProps, unknown> {
-  constructor(props: ModalProps) {
-    super(props);
-  }
+const Modal: React.FC<ModalProps> = ({ card, onClose }) => {
+  useEffect(() => {
+    document.addEventListener('keydown', (e) => {
+      closeOnEsc(e);
+    });
 
-  componentDidMount() {
-    document.addEventListener('keydown', this.closeOnEsc);
-  }
+    return document.removeEventListener('keydown', (e) => {
+      closeOnEsc(e);
+    });
+  }, []);
 
-  closeOnEsc = (e: KeyboardEvent) => {
+  const closeOnEsc = (e: KeyboardEvent) => {
     if (e.key === 'Escape') {
-      this.onCloseHandler();
+      onCloseHandler();
     }
   };
 
-  async componentWillUnmount() {
-    document.removeEventListener('keydown', this.closeOnEsc);
-  }
-
-  onCloseHandler = async () => {
-    this.props.onClose();
+  const onCloseHandler = async () => {
+    onClose();
   };
 
-  render() {
-    return (
-      <div className={classes.modal}>
-        <div className={classes['modal__overlay']} onClick={this.onCloseHandler}></div>
-        <button className={classes['modal__close']} onClick={this.onCloseHandler}>
-          x
-        </button>
-        <div className={classes['modal__content']}>
-          <article className={[classes['modal__card'], classes['modal-card']].join(' ')}>
-            <img
-              src={this.props.card.image}
-              className={classes['modal-card__image']}
-              alt={this.props.card.name}
-              width="300px"
-              height="300px"
-            />
-            <div className={classes['modal-card__info']}>
-              <h3 className={classes['modal-card__title']}>{this.props.card.name}</h3>
-              <p
-                className={[
-                  classes['modal-card__status'],
-                  this.props.card.status === 'Alive'
-                    ? classes['modal-card__status--alive']
-                    : classes['modal-card__status--dead'],
-                ].join(' ')}
-              >
-                {this.props.card.status} - {this.props.card.species}
-              </p>
+  return (
+    <div className={classes.modal}>
+      <div className={classes['modal__overlay']} onClick={onCloseHandler}></div>
+      <button className={classes['modal__close']} onClick={onCloseHandler}>
+        x
+      </button>
+      <div className={classes['modal__content']}>
+        <article className={[classes['modal__card'], classes['modal-card']].join(' ')}>
+          <img
+            src={card.image}
+            className={classes['modal-card__image']}
+            alt={card.name}
+            width="300px"
+            height="300px"
+          />
+          <div className={classes['modal-card__info']}>
+            <h3 className={classes['modal-card__title']}>{card.name}</h3>
+            <p
+              className={[
+                classes['modal-card__status'],
+                card.status === 'Alive'
+                  ? classes['modal-card__status--alive']
+                  : classes['modal-card__status--dead'],
+              ].join(' ')}
+            >
+              {card.status} - {card.species}
+            </p>
 
-              <p className={classes['modal-card__text']}>
-                Last known location:
-                <p>{this.props.card.location.name}</p>
-              </p>
-              <p className={classes['modal-card__text']}>
-                Gender:
-                <p>{this.props.card.gender}</p>
-              </p>
-            </div>
-          </article>
-        </div>
+            <p className={classes['modal-card__text']}>
+              Last known location:
+              <p>{card.location.name}</p>
+            </p>
+            <p className={classes['modal-card__text']}>
+              Gender:
+              <p>{card.gender}</p>
+            </p>
+          </div>
+        </article>
       </div>
-    );
-  }
-}
+    </div>
+  );
+};
 
 export default Modal;
