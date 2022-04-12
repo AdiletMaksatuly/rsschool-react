@@ -1,87 +1,72 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import classes from './SearchBar.module.css';
 
-interface SearchBarProps {
+type SearchBarProps = {
   value: string;
   onChange: (value: string) => void;
   onSubmit: () => void;
   onReset: () => void;
-  isResetBtnDisabled: boolean;
-}
+  disableResetBtn: boolean;
+};
 
-interface SearchBarState {
-  isError: boolean;
-  isResetBtnDisabled: boolean;
-}
+const SearchBar: React.FC<SearchBarProps> = ({
+  value,
+  onChange,
+  onSubmit,
+  onReset,
+  disableResetBtn,
+}) => {
+  const formRef = React.createRef<HTMLFormElement>();
+  const [isError, setIsError] = useState<boolean>(false);
+  const [isResetBtnDisabled, setIsResetBtnDisabled] = useState<boolean>(disableResetBtn);
 
-class SearchBar extends React.Component<SearchBarProps, SearchBarState> {
-  formRef = React.createRef<HTMLFormElement>();
+  useEffect(() => {
+    setIsResetBtnDisabled(disableResetBtn);
+  }, [disableResetBtn]);
 
-  constructor(props: SearchBarProps) {
-    super(props);
+  const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (isError) setIsError(false);
 
-    this.state = {
-      isError: false,
-      isResetBtnDisabled: this.props.isResetBtnDisabled,
-    };
-  }
-
-  componentDidUpdate(prevProps: SearchBarProps) {
-    if (prevProps.isResetBtnDisabled !== this.props.isResetBtnDisabled) {
-      this.setState({ isResetBtnDisabled: this.props.isResetBtnDisabled });
-    }
-  }
-
-  onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (this.state.isError) this.setState({ isError: false });
-
-    this.props.onChange(event.target.value);
+    onChange(event.target.value);
   };
 
-  onResetHandler = (event: React.FormEvent) => {
+  const onResetHandler = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (this.state.isError) this.setState({ isError: false });
+    if (isError) setIsError(false);
 
-    this.props.onChange('');
-    this.props.onReset();
-    this.setState({ isResetBtnDisabled: true });
+    onChange('');
+    onReset();
+    setIsResetBtnDisabled(true);
   };
 
-  onSubmitHandler = (event: React.FormEvent) => {
+  const onSubmitHandler = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (this.props.value === '') {
-      this.setState({ isError: true });
+    if (value === '') {
+      setIsError(true);
       return;
     }
 
-    this.props.onSubmit();
-    this.setState({ isResetBtnDisabled: false });
+    onSubmit();
+    setIsResetBtnDisabled(false);
   };
 
-  render() {
-    return (
-      <form ref={this.formRef} onSubmit={this.onSubmitHandler} onReset={this.onResetHandler}>
-        <input
-          value={this.props.value}
-          onChange={this.onChangeHandler}
-          type="search"
-          placeholder="Type something..."
-          className={`${classes.input} ${this.state.isError ? classes['error'] : ''}`}
-        />
-        <button className={[classes['submit-btn'], 'btn', 'btn--primary'].join(' ')}>SEARCH</button>
-        <button
-          disabled={this.state.isResetBtnDisabled}
-          type="reset"
-          value="RESET"
-          className="btn btn--primary"
-        >
-          RESET
-        </button>
-      </form>
-    );
-  }
-}
+  return (
+    <form ref={formRef} onSubmit={onSubmitHandler} onReset={onResetHandler}>
+      <input
+        value={value}
+        onChange={onChangeHandler}
+        type="search"
+        placeholder="Type something..."
+        className={`${classes.input} ${isError ? classes['error'] : ''}`}
+      />
+      <button className={[classes['submit-btn'], 'btn', 'btn--primary'].join(' ')}>SEARCH</button>
+      <button disabled={isResetBtnDisabled} type="reset" value="RESET" className="btn btn--primary">
+        RESET
+      </button>
+    </form>
+  );
+};
 
 export default SearchBar;

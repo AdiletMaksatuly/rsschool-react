@@ -17,14 +17,13 @@ const Home: React.FC = () => {
     message?: string;
   }>({ isError: false, message: '' });
   const [modalData, setModalData] = useState<ICard | null>(null);
-  const [shouldResetBtnInSearchInputBeDisabled, setShouldResetBtnInSearchInputBeDisabled] =
-    useState<boolean>(true);
+  const [disableResetBtn, setDisableResetBtn] = useState<boolean>(true);
 
   useEffect(() => {
     const savedValue = localStorage.getItem('searchQuery') || '';
 
     if (savedValue) {
-      setShouldResetBtnInSearchInputBeDisabled(false);
+      setDisableResetBtn(false);
     }
     setSearchQuery(savedValue);
     fetchCharacters(savedValue);
@@ -93,7 +92,7 @@ const Home: React.FC = () => {
           onChange={updateSearchQuery}
           onReset={searchResetHandler}
           onSubmit={searchCharacters}
-          isResetBtnDisabled={shouldResetBtnInSearchInputBeDisabled}
+          disableResetBtn={disableResetBtn}
         />
 
         {error.isError ? (
