@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CardList from '../components/CardList';
 import Modal from '../components/Modal/Modal';
 import SearchBar from '../components/SearchBar';
@@ -21,137 +21,104 @@ type HomeState = {
   shouldResetBtnInSearchInputBeDisabled: boolean;
 };
 
-class Home extends React.Component<unknown, HomeState> {
-  state: HomeState = {
-    cards: [],
-    searchQuery: '',
-    prevSearchQuery: '',
-    pageInfo: {
-      totalPages: 1,
-      currentPage: 1,
-    },
-    error: {
-      isError: false,
-    },
-    isLoading: true,
-    modalData: null,
-    shouldResetBtnInSearchInputBeDisabled: true,
-  };
+const Home: React.FC = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+  const [pageInfo, setPageInfo] = useState({ totalPages: 1, currentPage: 1 });
+  const [cards, setCards] = useState([]);
+  const [error, setError] = useState({ isError: false, message: '' });
+  const [modalData, setModalData] = useState<ICard | null>(null);
+  const [shouldResetBtnInSearchInputBeDisabled, setShouldResetBtnInSearchInputBeDisabled] =
+    useState(true);
 
-  constructor(props: unknown) {
-    super(props);
-  }
-
-  componentDidMount() {
+  useEffect(() => {
     const savedValue = localStorage.getItem('searchQuery') || '';
 
-    this.setState(
-      {
-        searchQuery: savedValue,
-      },
-      () => {
-        if (this.state.searchQuery !== '') {
-          this.setState({
-            shouldResetBtnInSearchInputBeDisabled: false,
-          });
-        }
+    if (savedValue) {
+      setShouldResetBtnInSearchInputBeDisabled(false);
+    }
+    setSearchQuery(savedValue);
+    fetchCharacters(savedValue);
+  }, []);
 
-        this.fetchCharacters();
-      }
-    );
-  }
+  useEffect(() => {
+    localStorage.setItem('searchQuery', searchQuery);
+  }, [searchQuery]);
 
-  componentWillUnmount() {
-    localStorage.setItem('searchQuery', this.state.searchQuery);
-  }
-
-  fetchCharacters = async () => {
+  const fetchCharacters = async (query?: string) => {
     try {
-      this.setState({ isLoading: true });
+      setIsLoading(true);
 
       const response = await fetch(
-        `https://rickandmortyapi.com/api/character/?page=${this.state.pageInfo.currentPage}&name=${this.state.searchQuery}`
+        `https://rickandmortyapi.com/api/character/?page=${pageInfo.currentPage}&name=${query}`
       );
 
       if (response.ok) {
         const { results: cardsData, info } = await response.json();
 
-        this.setState({
-          cards: cardsData,
-          pageInfo: { ...this.state.pageInfo, totalPages: info.pages },
-        });
+        setCards(cardsData);
+        setPageInfo({ currentPage: pageInfo.currentPage, totalPages: info.pages });
       } else {
         throw new Error(`${response.status}`);
       }
     } catch (error) {
       if ((error as Error).message === '404') {
-        this.setState({ error: { isError: true, message: 'Not found' } });
+        setError({ isError: true, message: 'Not found' });
       }
     } finally {
-      this.setState({ isLoading: false });
+      setIsLoading(false);
     }
   };
 
-  searchCharacters = () => {
-    if (this.state.error.isError) {
-      this.setState({ error: { isError: false, message: '' } });
+  const searchCharacters = (query: string = searchQuery) => {
+    if (error.isError) {
+      setError({ isError: false, message: '' });
     }
 
-    this.fetchCharacters();
+    fetchCharacters(query);
   };
 
-  searchResetHandler = () => {
-    this.setState({ searchQuery: '' }, () => this.searchCharacters());
+  const searchResetHandler = () => {
+    setSearchQuery('');
+    searchCharacters('');
   };
 
-  componentDidUpdate = (_: unknown, prevState: HomeState) => {
-    if (prevState.searchQuery !== this.state.searchQuery) {
-      this.setState({ prevSearchQuery: prevState.searchQuery });
-    }
+  const showModal = (card: ICard) => {
+    setModalData(card);
   };
 
-  showModal = (card: ICard) => {
-    this.setState({ modalData: card });
+  const closeModal = () => {
+    setModalData(null);
   };
 
-  closeModal = () => {
-    this.setState({ modalData: null });
+  const updateSearchQuery = (value: string) => {
+    setSearchQuery(value);
   };
 
-  updateSearchQuery = (value: string) => {
-    this.setState({ searchQuery: value });
-  };
+  return (
+    <main className="page">
+      <div className="page__content container">
+        <h1>Home page</h1>
+        <SearchBar
+          value={searchQuery}
+          onChange={updateSearchQuery}
+          onReset={searchResetHandler}
+          onSubmit={searchCharacters}
+          isResetBtnDisabled={shouldResetBtnInSearchInputBeDisabled}
+        />
 
-  render() {
-    return (
-      <main className="page">
-        <div className="page__content container">
-          <h1>Home page</h1>
-          <SearchBar
-            value={this.state.searchQuery}
-            onChange={this.updateSearchQuery}
-            onReset={this.searchResetHandler}
-            onSubmit={this.searchCharacters}
-            isResetBtnDisabled={this.state.shouldResetBtnInSearchInputBeDisabled}
-          />
+        {error.isError ? (
+          <div>Not found... Try to enter another search query</div>
+        ) : isLoading ? (
+          <div>Loading...</div>
+        ) : (
+          <CardList cards={cards} onClick={showModal} />
+        )}
 
-          {this.state.error.isError ? (
-            <div>Not found... Try to enter another search query</div>
-          ) : this.state.isLoading ? (
-            <div>Loading...</div>
-          ) : (
-            <CardList cards={this.state.cards} onClick={this.showModal} />
-          )}
-
-          {this.state.modalData ? (
-            <Modal card={this.state.modalData} onClose={this.closeModal} />
-          ) : (
-            ''
-          )}
-        </div>
-      </main>
-    );
-  }
-}
+        {modalData ? <Modal card={modalData} onClose={closeModal} /> : ''}
+      </div>
+    </main>
+  );
+};
 
 export default Home;
