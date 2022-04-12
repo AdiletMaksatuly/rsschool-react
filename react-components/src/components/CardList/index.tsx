@@ -9,24 +9,18 @@ interface CardListProps {
   onClick?: (card: ICard) => void;
 }
 
-class CardList extends React.Component<CardListProps> {
-  constructor(props: CardListProps) {
-    super(props);
-  }
-
-  render() {
-    return (
-      <ul data-testid="cardList" className={classes['card-list']}>
-        {this.props.cards.map((card) => {
-          if ('origin' in card) {
-            return <CharacterCard card={card} key={card.id} onClick={this.props.onClick} />;
-          } else {
-            return <UserCard card={card} key={card.id} />;
-          }
-        })}
-      </ul>
-    );
-  }
-}
+const CardList: React.FC<CardListProps> = ({ cards, onClick }) => {
+  return (
+    <ul data-testid="cardList" className={classes['card-list']}>
+      {cards.map((card) => {
+        if ('origin' in card) {
+          return <CharacterCard card={card} key={card.id} onClick={onClick} />;
+        } else {
+          return <UserCard card={card} key={card.id} />;
+        }
+      })}
+    </ul>
+  );
+};
 
 export default CardList;
