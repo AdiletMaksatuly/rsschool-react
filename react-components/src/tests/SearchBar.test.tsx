@@ -16,7 +16,7 @@ describe('searchbar testing', () => {
 
     unmount();
 
-    expect(localStorage.setItem).toHaveBeenCalledTimes(1);
+    expect(localStorage.setItem).toHaveBeenCalledTimes(randomTextUserWillType.length + 1);
     expect(localStorage.setItem).toHaveBeenCalledWith('searchQuery', randomTextUserWillType);
     expect(localStorage.getItem('searchQuery')).toBe(randomTextUserWillType);
   });
