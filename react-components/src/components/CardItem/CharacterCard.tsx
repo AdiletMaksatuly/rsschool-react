@@ -7,38 +7,34 @@ interface CharacterCardProps {
   onClick?: (card: ICard) => void;
 }
 
-export default class CharacterCard extends React.Component<CharacterCardProps> {
-  constructor(props: CharacterCardProps) {
-    super(props);
-  }
-
-  onClickHandler = () => {
-    if (this.props.onClick) {
-      this.props.onClick(this.props.card);
+const CharacterCard: React.FC<CharacterCardProps> = ({ card, onClick }) => {
+  const onClickHandler = () => {
+    if (onClick) {
+      onClick(card);
     }
   };
 
-  render() {
-    return (
-      <li className={classes['card-item']} data-testid="cardItem" onClick={this.onClickHandler}>
-        <article className={classes['card']}>
-          <img
-            src={this.props.card.image}
-            className={classes['card__img']}
-            alt={this.props.card.name}
-            width="300px"
-            height="300px"
-          />
-          <h3 className={classes['card__title']}>
-            <span>{this.props.card.id} </span>
-            {this.props.card.name}
-          </h3>
-          <p>Species: {this.props.card.species}</p>
-          <button className={[classes['card__btn'], 'btn', 'btn--primary'].join(' ')}>
-            READ MORE...
-          </button>
-        </article>
-      </li>
-    );
-  }
-}
+  return (
+    <li className={classes['card-item']} data-testid="cardItem" onClick={onClickHandler}>
+      <article className={classes['card']}>
+        <img
+          src={card.image}
+          className={classes['card__img']}
+          alt={card.name}
+          width="300px"
+          height="300px"
+        />
+        <h3 className={classes['card__title']}>
+          <span>{card.id} </span>
+          {card.name}
+        </h3>
+        <p>Species: {card.species}</p>
+        <button className={[classes['card__btn'], 'btn', 'btn--primary'].join(' ')}>
+          READ MORE...
+        </button>
+      </article>
+    </li>
+  );
+};
+
+export default CharacterCard;
