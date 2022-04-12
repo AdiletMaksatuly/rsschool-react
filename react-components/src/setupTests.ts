@@ -4,4 +4,3 @@
 // learn more: https://github.com/testing-library/jest-domglobal.fetch = require('jest-mock-fetch');
 import '@testing-library/jest-dom';
 import 'jest-localstorage-mock';
-import 'jest-mock-fetch';
