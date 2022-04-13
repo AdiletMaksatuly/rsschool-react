@@ -38,7 +38,6 @@ const CreateForm: React.FC<CreateFormProps> = ({ onCreate }) => {
   } = useForm<FormInputs>();
 
   const [userData, setUserData] = useState<IUser | Record<string, never>>({});
-  const [isError, setIsError] = useState<boolean>(false);
   const [showErrorAlert, setShowErrorAlert] = useState<boolean>(false);
   const [showSuccessAlert, setShowSuccessAlert] = useState<boolean>(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(!isDirty && !isValid);
@@ -47,7 +46,6 @@ const CreateForm: React.FC<CreateFormProps> = ({ onCreate }) => {
   useEffect(() => {
     if (isSubmitted && isValid === false) {
       setIsButtonDisabled(true);
-      console.log(errors);
       setShowErrorAlert(true);
     }
   }, [isSubmitting]);
@@ -60,7 +58,6 @@ const CreateForm: React.FC<CreateFormProps> = ({ onCreate }) => {
 
   useEffect(() => {
     const userDataJSON = JSON.stringify(userData);
-    console.log(userData);
 
     if (userDataJSON === '{}') return;
 
@@ -97,7 +94,6 @@ const CreateForm: React.FC<CreateFormProps> = ({ onCreate }) => {
 
   const submitHandler: SubmitHandler<FormInputs> = async (data, e) => {
     const { username, birthDate, birthPlace, sex, img } = data;
-    console.log(data);
 
     const image = await createURLToImg(img);
 
@@ -115,7 +111,7 @@ const CreateForm: React.FC<CreateFormProps> = ({ onCreate }) => {
     setShowSuccessAlert(true);
     setIsClearFileInputPreview(true);
   };
-
+  //
   return (
     <form
       data-testid="form"
@@ -133,12 +129,14 @@ const CreateForm: React.FC<CreateFormProps> = ({ onCreate }) => {
         placeholder="Your Name"
         data-testid="name"
       />
+      {errors.username && <p className="error">{errors.username.message}</p>}
       <input
         className={cssClasses.inputs}
         type="date"
         {...register('birthDate', { required: 'This field is required!' })}
         data-testid="birthDate"
       />
+      {errors.birthDate && <p className="error">{errors.birthDate.message}</p>}
       <div ref={sexInputsWrapperRef} className={cssClasses.radioWrapper}>
         <label htmlFor="sexMale" className={cssClasses.radioLabel}>
           Male
@@ -160,6 +158,7 @@ const CreateForm: React.FC<CreateFormProps> = ({ onCreate }) => {
           />
         </label>
       </div>
+      {errors.sex && <p className="error">{errors.sex.message}</p>}
       <select
         className={cssClasses.formControl}
         defaultValue=""
@@ -173,13 +172,18 @@ const CreateForm: React.FC<CreateFormProps> = ({ onCreate }) => {
         <option value="ru">Russia</option>
         <option value="ua">Ukraine</option>
       </select>
+      {errors.birthPlace && <p className="error">{errors.birthPlace.message}</p>}
+
       <FileInput
         inputId="imgFileInput"
         name="img"
-        cssClasses={{ buttonClassName: cssClasses.fileInputUploadBtn }}
+        cssClasses={{
+          buttonClassName: cssClasses.fileInputUploadBtn,
+        }}
         registerHook={register}
         isClearPreview={isClearFileInputPreview}
       />
+
       <label ref={agreementCheckboxLabelRef} htmlFor="agreement" className={cssClasses.formControl}>
         <input
           type="checkbox"
@@ -189,6 +193,8 @@ const CreateForm: React.FC<CreateFormProps> = ({ onCreate }) => {
         />
         Согласен на обработку данных
       </label>
+      {errors.agreement && <p className="error">{errors.agreement.message}</p>}
+
       <button disabled={isButtonDisabled} className={cssClasses.submitBtn} data-testid="submit">
         Submit
       </button>

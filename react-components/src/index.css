@@ -115,9 +115,5 @@ input {
 }
 
 .error {
-  border: 2px solid red;
-}
-
-label input[type='checkbox'].error {
-  background-color: red;
+  color: red;
 }

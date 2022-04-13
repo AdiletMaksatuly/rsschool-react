@@ -51,10 +51,6 @@ const FileInput: React.FC<FileInputProps> = (props) => {
     }
   }, [props.isClearPreview]);
 
-  useEffect(() => {
-    console.log('file');
-  }, [file]);
-
   addClassNames();
 
   function addClassNames() {
@@ -76,7 +72,6 @@ const FileInput: React.FC<FileInputProps> = (props) => {
       reader.readAsDataURL(file);
       reader.onload = () => {
         setFile({ name: file.name, URL: reader.result });
-        console.log('change');
       };
     }
   }

@@ -7,8 +7,6 @@ const CreateCardPage: React.FC = () => {
   const [cards, setCards] = useState<IUser[]>([]);
 
   const addUser = (userData: IUser) => {
-    console.log('yo');
-
     setCards([...cards, userData]);
   };
 
