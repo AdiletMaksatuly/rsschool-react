@@ -24,8 +24,9 @@ const UserCard: React.FC<UserCardProps> = ({ card }) => {
       <article className={classes['card']}>
         <img
           src={
-            `${card.img}` ||
-            'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
+            card.img
+              ? `${card.img}`
+              : 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png'
           }
           className={classes['card__img']}
           alt={card.name}

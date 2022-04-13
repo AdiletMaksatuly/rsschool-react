@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import CardList from '../components/CardList';
 import Modal from '../components/Modal/Modal';
 import SearchBar from '../components/SearchBar';

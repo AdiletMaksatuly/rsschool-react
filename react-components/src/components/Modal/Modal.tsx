@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { ICard } from '../../types';
 import classes from './Modal.module.css';
 

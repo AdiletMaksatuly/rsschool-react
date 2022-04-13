@@ -1,4 +1,4 @@
-export interface ICard {
+export type ICard = {
   id: number;
   name: string;
   image: string;
@@ -13,13 +13,22 @@ export interface ICard {
   origin: {
     name: string;
   };
-}
+};
 
-export interface IUser {
-  id: number;
+export type IUser = {
+  id: number | null;
   name: string;
   birthDate: string;
   birthPlace: string;
   sex: 'male' | 'female' | any;
   img: string | ArrayBuffer | null;
-}
+};
+
+export type FormInputs = {
+  username: string;
+  sex: string;
+  birthDate: string;
+  agreement: boolean;
+  img: FileList;
+  birthPlace: string;
+};
