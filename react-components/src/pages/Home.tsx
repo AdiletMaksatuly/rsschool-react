@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import CardList from '../components/CardList';
 import Modal from '../components/Modal/Modal';
 import SearchBar from '../components/SearchBar';
+import { RootContext } from '../context';
+import { useActions } from '../hooks/useActions';
 import { ICard } from '../types';
 
 const Home: React.FC = () => {
@@ -11,13 +13,16 @@ const Home: React.FC = () => {
     totalPages: 1,
     currentPage: 1,
   });
-  const [cards, setCards] = useState<ICard[]>([]);
   const [error, setError] = useState<{
     isError: boolean;
     message?: string;
   }>({ isError: false, message: '' });
   const [modalData, setModalData] = useState<ICard | null>(null);
   const [disableResetBtn, setDisableResetBtn] = useState<boolean>(true);
+
+  const [state, dispatch] = useContext(RootContext);
+  const { cards } = state;
+  const { setCards } = useActions();
 
   useEffect(() => {
     const savedValue = localStorage.getItem('searchQuery') || '';
@@ -44,7 +49,10 @@ const Home: React.FC = () => {
       if (response.ok) {
         const { results: cardsData, info } = await response.json();
 
-        setCards(cardsData);
+        console.log(cardsData);
+
+        if (dispatch) dispatch(setCards(cardsData));
+
         setPageInfo({ currentPage: pageInfo.currentPage, totalPages: info.pages });
       } else {
         throw new Error(`${response.status}`);
