@@ -26,9 +26,9 @@ export type IUser = {
 
 export type FormInputs = {
   username: string;
-  sex: string;
+  sex: 'male' | 'female' | any;
   birthDate: string;
   agreement: boolean;
-  img: FileList;
+  img: File[];
   birthPlace: string;
 };

@@ -1,4 +1,4 @@
-import { ICard } from '../types';
+import { FormInputs, ICard } from '../types';
 import { RootActionEnum } from './types';
 
 export const RootActionCreators = {
@@ -6,6 +6,18 @@ export const RootActionCreators = {
     return {
       type: RootActionEnum.SET_CARDS,
       payload: cards,
+    };
+  },
+  setSearchValue: (searchValue: string) => {
+    return {
+      type: RootActionEnum.SET_SEARCH_VALUE,
+      payload: searchValue,
+    };
+  },
+  setFormValues: (formValues: FormInputs) => {
+    return {
+      type: RootActionEnum.SET_FORM_VALUES,
+      payload: formValues,
     };
   },
 };

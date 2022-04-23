@@ -3,6 +3,7 @@ import CardList from '../components/CardList';
 import Modal from '../components/Modal/Modal';
 import SearchBar from '../components/SearchBar';
 import { RootContext } from '../context';
+import { RootAction } from '../context/types';
 import { useActions } from '../hooks/useActions';
 import { ICard } from '../types';
 
@@ -30,7 +31,16 @@ const Home: React.FC = () => {
     if (savedValue) {
       setDisableResetBtn(false);
     }
+
     setSearchQuery(savedValue);
+
+    if (state.cards.length) {
+      dispatch(setCards(state.cards) as RootAction);
+      setIsLoading(false);
+
+      return;
+    }
+
     fetchCharacters(savedValue);
   }, []);
 
@@ -49,10 +59,7 @@ const Home: React.FC = () => {
       if (response.ok) {
         const { results: cardsData, info } = await response.json();
 
-        console.log(cardsData);
-
-        if (dispatch) dispatch(setCards(cardsData));
-
+        dispatch(setCards(cardsData) as RootAction);
         setPageInfo({ currentPage: pageInfo.currentPage, totalPages: info.pages });
       } else {
         throw new Error(`${response.status}`);

@@ -1,7 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
+import { RootContext } from '../../context';
+import { RootAction } from '../../context/types';
+import { useActions } from '../../hooks/useActions';
 import { FormInputs, IUser } from '../../types';
-import { joinClasses } from '../../utils';
+import { haveSomeNonEmptyValues, joinClasses } from '../../utils';
 import FileInput from '../FileInput';
 import classes from './CreateForm.module.css';
 import StatusAlert from './StatusAlert';
@@ -30,18 +33,40 @@ const CreateForm: React.FC<CreateFormProps> = ({ onCreate }) => {
   const sexInputsWrapperRef = useRef<HTMLInputElement>(null);
   const agreementCheckboxLabelRef = useRef<HTMLLabelElement>(null);
 
+  const [state, dispatch] = useContext(RootContext);
+  const { formValues } = state;
+  const { setFormValues } = useActions();
+
   const {
     register,
     handleSubmit,
     formState: { errors, isDirty, isValid, isSubmitting, isSubmitted },
     reset,
-  } = useForm<FormInputs>();
+    getValues,
+  } = useForm<FormInputs>({
+    defaultValues: {
+      ...formValues,
+    },
+  });
 
   const [userData, setUserData] = useState<IUser | Record<string, never>>({});
   const [showErrorAlert, setShowErrorAlert] = useState<boolean>(false);
   const [showSuccessAlert, setShowSuccessAlert] = useState<boolean>(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(!isDirty && !isValid);
   const [isClearFileInputPreview, setIsClearFileInputPreview] = useState<boolean>(false);
+
+  useEffect(() => {
+    const defaultValues = getValues();
+
+    if (haveSomeNonEmptyValues(defaultValues)) {
+      setIsButtonDisabled(false);
+    }
+
+    return () => {
+      const lastValues = getValues();
+      dispatch(setFormValues(lastValues) as RootAction);
+    };
+  }, []);
 
   useEffect(() => {
     if (isSubmitted && isValid === false) {
@@ -71,10 +96,9 @@ const CreateForm: React.FC<CreateFormProps> = ({ onCreate }) => {
     }
   }, [isClearFileInputPreview]);
 
-  const createURLToImg = async (files: FileList) => {
+  const createURLToImg = async (file: File) => {
     const creating = new Promise<string | ArrayBuffer | null>((resolve) => {
-      if (files.length) {
-        const file = files[0];
+      if (file) {
         const reader = new FileReader();
 
         reader.readAsDataURL(file);
@@ -95,7 +119,7 @@ const CreateForm: React.FC<CreateFormProps> = ({ onCreate }) => {
   const submitHandler: SubmitHandler<FormInputs> = async (data, e) => {
     const { username, birthDate, birthPlace, sex, img } = data;
 
-    const image = await createURLToImg(img);
+    const image = await createURLToImg(img[0]);
 
     setUserData({
       id: Date.now(),
@@ -111,7 +135,7 @@ const CreateForm: React.FC<CreateFormProps> = ({ onCreate }) => {
     setShowSuccessAlert(true);
     setIsClearFileInputPreview(true);
   };
-  //
+
   return (
     <form
       data-testid="form"
