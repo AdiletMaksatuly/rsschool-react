@@ -4,13 +4,13 @@ import classes from './CardItem.module.css';
 
 interface CharacterCardProps {
   card: ICard;
-  onClick?: (card: ICard) => void;
+  onClick?: (id: number) => void;
 }
 
 const CharacterCard: React.FC<CharacterCardProps> = ({ card, onClick }) => {
   const onClickHandler = () => {
     if (onClick) {
-      onClick(card);
+      onClick(card.id);
     }
   };
 

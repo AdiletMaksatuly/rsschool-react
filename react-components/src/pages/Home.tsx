@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import CardList from '../components/CardList';
 import Modal from '../components/Modal/Modal';
 import SearchBar from '../components/SearchBar';
@@ -24,6 +25,8 @@ const Home: React.FC = () => {
   const [state, dispatch] = useContext(RootContext);
   const { cards } = state;
   const { setCards } = useActions();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const savedValue = localStorage.getItem('searchQuery') || '';
@@ -115,7 +118,7 @@ const Home: React.FC = () => {
         ) : isLoading ? (
           <div>Loading...</div>
         ) : (
-          <CardList cards={cards} onClick={showModal} />
+          <CardList cards={cards} onClick={(id: number) => navigate('/cards/' + id)} />
         )}
 
         {modalData ? <Modal card={modalData} onClose={closeModal} /> : ''}

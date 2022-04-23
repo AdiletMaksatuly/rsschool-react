@@ -116,7 +116,7 @@ const CreateForm: React.FC<CreateFormProps> = ({ onCreate }) => {
     return await creating;
   };
 
-  const submitHandler: SubmitHandler<FormInputs> = async (data, e) => {
+  const submitHandler: SubmitHandler<FormInputs> = async (data) => {
     const { username, birthDate, birthPlace, sex, img } = data;
 
     const image = await createURLToImg(img[0]);

@@ -6,7 +6,7 @@ import UserCard from '../CardItem/UserCard';
 
 interface CardListProps {
   cards: ICard[] | IUser[];
-  onClick?: (card: ICard) => void;
+  onClick?: (id: number) => void;
 }
 
 const CardList: React.FC<CardListProps> = ({ cards, onClick }) => {

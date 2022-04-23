@@ -1,4 +1,4 @@
-import { createContext, Dispatch, useContext } from 'react';
+import { createContext, Dispatch } from 'react';
 import { ICard } from '../types';
 import { RootAction, RootActionEnum, RootState } from './types';
 
