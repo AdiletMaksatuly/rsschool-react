@@ -1,13 +1,18 @@
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 import CardList from '../components/CardList';
 import CreateForm from '../components/CreateForm';
+import { RootContext } from '../context';
+import { RootAction } from '../context/types';
+import { useActions } from '../hooks/useActions';
 import { IUser } from '../types';
 
 const CreateCardPage: React.FC = () => {
-  const [cards, setCards] = useState<IUser[]>([]);
+  const [state, dispatch] = useContext(RootContext);
+  const { formCards: cards } = state;
+  const { setFormCards: setCards } = useActions();
 
   const addUser = (userData: IUser) => {
-    setCards([...cards, userData]);
+    dispatch(setCards([...cards, userData]) as RootAction);
   };
 
   return (

@@ -13,6 +13,7 @@ export const initialState = {
     img: [],
     agreement: false,
   },
+  formCards: [],
 };
 
 export default function rootReducer(
@@ -26,6 +27,8 @@ export default function rootReducer(
       return { ...state, searchValue: action.payload };
     case RootActionEnum.SET_FORM_VALUES:
       return { ...state, formValues: action.payload };
+    case RootActionEnum.SET_FORM_CARDS:
+      return { ...state, formCards: action.payload };
     default:
       return state;
   }

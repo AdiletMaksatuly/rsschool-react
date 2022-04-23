@@ -12,6 +12,5 @@ export const haveSomeNonEmptyValues = (formValues: FormInputs) => {
 
     return !!value;
   });
-  console.log(conditions);
   return conditions;
 };
