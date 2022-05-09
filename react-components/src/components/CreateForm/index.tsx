@@ -1,13 +1,12 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
-import { RootContext } from '../../context';
-import { RootAction } from '../../context/types';
 import { useActions } from '../../hooks/useActions';
 import { FormInputs, IUser } from '../../types';
 import { haveSomeNonEmptyValues, joinClasses } from '../../utils';
 import FileInput from '../FileInput';
 import classes from './CreateForm.module.css';
 import StatusAlert from './StatusAlert';
+import { useTypedDispatch, useTypedSelector } from '../../hooks/redux';
 
 const cssClasses = {
   form: joinClasses(classes['form']),
@@ -33,8 +32,8 @@ const CreateForm: React.FC<CreateFormProps> = ({ onCreate }) => {
   const sexInputsWrapperRef = useRef<HTMLInputElement>(null);
   const agreementCheckboxLabelRef = useRef<HTMLLabelElement>(null);
 
-  const [state, dispatch] = useContext(RootContext);
-  const { formValues } = state;
+  const dispatch = useTypedDispatch();
+  const formValues = useTypedSelector((state) => state.formValues);
   const { setFormValues } = useActions();
 
   const {
@@ -64,7 +63,7 @@ const CreateForm: React.FC<CreateFormProps> = ({ onCreate }) => {
 
     return () => {
       const lastValues = getValues();
-      dispatch(setFormValues(lastValues) as RootAction);
+      dispatch(setFormValues(lastValues));
     };
   }, []);
 

@@ -1,3 +1,3 @@
-import { allActionCreators } from '../context/action-creators';
+import { allActionCreators } from '../store/action-creators';
 
 export const useActions = () => allActionCreators;

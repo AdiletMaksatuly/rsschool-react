@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { RootContext } from '../../context';
+import { useTypedDispatch, useTypedSelector } from '../../hooks/redux';
 import { ICard } from '../../types';
 import classes from './CharacterPage.module.css';
 
@@ -8,8 +8,8 @@ const CharacterPage = () => {
   const navigate = useNavigate();
   const params = useParams();
 
-  const [state, dispatch] = useContext(RootContext);
-  const { cards } = state;
+  const cards = useTypedSelector((state) => state.cards);
+
   const card = cards.find((card) => {
     if (params.id) {
       return card.id === +params.id;

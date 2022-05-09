@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import CardList from '../components/CardList';
 import Modal from '../components/Modal/Modal';
 import SearchBar from '../components/SearchBar';
-import { RootContext } from '../context';
-import { RootAction } from '../context/types';
+import { RootAction } from '../store/types';
 import { useActions } from '../hooks/useActions';
 import { ICard } from '../types';
+import { useTypedDispatch, useTypedSelector } from '../hooks/redux';
 
 const Home: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -22,8 +22,8 @@ const Home: React.FC = () => {
   const [modalData, setModalData] = useState<ICard | null>(null);
   const [disableResetBtn, setDisableResetBtn] = useState<boolean>(true);
 
-  const [state, dispatch] = useContext(RootContext);
-  const { cards } = state;
+  const cards = useTypedSelector((state) => state.cards);
+  const dispatch = useTypedDispatch();
   const { setCards } = useActions();
 
   const navigate = useNavigate();
@@ -37,8 +37,8 @@ const Home: React.FC = () => {
 
     setSearchQuery(savedValue);
 
-    if (state.cards.length) {
-      dispatch(setCards(state.cards) as RootAction);
+    if (cards.length) {
+      dispatch(setCards(cards));
       setIsLoading(false);
 
       return;

@@ -1,4 +1,4 @@
-import { createContext, Dispatch } from 'react';
+import { configureStore } from '@reduxjs/toolkit';
 import { ICard } from '../types';
 import { RootAction, RootActionEnum, RootState } from './types';
 
@@ -34,7 +34,10 @@ export default function rootReducer(
   }
 }
 
-export const RootContext = createContext<[RootState, Dispatch<RootAction>]>([
-  initialState,
-  () => null,
-]);
+export const store = configureStore({
+  reducer: rootReducer,
+});
+
+export type AppState = ReturnType<typeof store.getState>;
+export type AppStore = typeof store;
+export type AppDispatch = AppStore['dispatch'];
