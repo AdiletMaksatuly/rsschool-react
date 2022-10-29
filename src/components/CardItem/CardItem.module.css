@@ -1,0 +1,16 @@
+.card {
+  word-break: break-word;
+}
+
+.card__img {
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 1 / 1;
+}
+
+.card__title {
+}
+
+.card__btn {
+  margin-bottom: 20px;
+}
