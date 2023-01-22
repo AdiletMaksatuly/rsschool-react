@@ -11,6 +11,8 @@
 ## Как запустить:
 - Склонировать репозиторий `git clone https://github.com/AdiletMaksatuly/rsschool-react.git`
 - Перейти в папку репозитория `cd rsschool-react`
+- Перейти к самой актуальной ветке `git checkout react-redux`
+- Перейти к папке приложения `cd react-components`
 - Установить все зависимости: `npm i`
 - Запустить проект: `npm start`
 
