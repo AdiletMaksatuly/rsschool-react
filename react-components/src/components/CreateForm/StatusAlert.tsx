@@ -24,7 +24,7 @@ class StatusAlert extends React.Component<StatusAlertProps, StatusAlertState> {
   }
 
   componentWillUnmount() {
-    clearInterval(this.interval!);
+    if (this.interval) clearInterval(this.interval);
   }
 
   render() {

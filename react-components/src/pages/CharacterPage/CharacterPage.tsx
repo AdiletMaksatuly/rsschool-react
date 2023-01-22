@@ -1,7 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useTypedDispatch, useTypedSelector } from '../../hooks/redux';
-import { ICard } from '../../types';
+import { useTypedSelector } from '../../hooks/redux';
 import classes from './CharacterPage.module.css';
 
 const CharacterPage = () => {
